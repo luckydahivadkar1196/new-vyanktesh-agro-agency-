@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Venktesh Agro - ERP (Phase 1: Billing)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/supabase/2.39.0/supabase.min.js"></script>
+<style>
+  :root{
+    --green:#1e7d34; --green-dark:#155a26; --bg:#f3f6f2; --card:#ffffff;
+    --border:#d9e2d6; --text:#1f2a22; --muted:#6b7a70; --danger:#c0392b; --warn:#b8860b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);}
+  header{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+  header h1{font-size:18px;margin:0;}
+  header .status{font-size:12px;opacity:.9;}
+  nav{display:flex;gap:6px;background:#fff;padding:8px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  nav button{background:none;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:600;}
+  nav button.active{background:var(--green);color:#fff;}
+  main{padding:16px;max-width:1100px;margin:0 auto;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .row > div{flex:1;min-width:150px;}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;}
+  input,select{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;}
+  button.primary{background:var(--green);color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:14px;cursor:pointer;font-weight:600;}
+  button.secondary{background:#eef2ec;color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:6px;cursor:pointer;}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
+  th,td{border:1px solid var(--border);padding:7px 8px;text-align:left;}
+  th{background:#eef4ec;}
+  .totals{display:flex;justify-content:flex-end;gap:24px;margin-top:10px;font-size:14px;}
+  .totals b{color:var(--green-dark);}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+  .tag.due{background:#fde8e6;color:var(--danger);}
+  .tag.paid{background:#e6f4ea;color:var(--green-dark);}
+  .hidden{display:none;}
+  .small{font-size:12px;color:var(--muted);}
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--green-dark);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;}
+  .toast.show{opacity:1;}
+  .item-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:8px;}
+  .remove-btn{background:var(--danger);color:#fff;border:none;border-radius:6px;padding:8px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌾 New Venktesh Agro Agency - ERP</h1>
+  <div class="status" id="connStatus">Connecting to Supabase...</div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('billing')">🧾 Billing</button>
+  <button onclick="showTab('products')">📦 Products / Stock</button>
+  <button onclick="showTab('parties')">👥 Parties</button>
+  <button onclick="showTab('invoices')">📋 Invoice History</button>
+  <button onclick="showTab('ledger')">💰 Udhaari Ledger</button>
+</nav>
+
+<main>
+
+<!-- ================= BILLING TAB ================= -->
+<div id="tab-billing">
+  <div class="card">
+    <h3>नवीन बिल (Sale Invoice)</h3>
+    <div class="row">
+      <div>
+        <label>Invoice No.</label>
+        <input id="invNo" readonly>
+      </div>
+      <div>
+        <label>Bill Format</label>
+        <select id="billFormat">
+          <option value="retail">Retail (B2C)</option>
+          <option value="tax">Tax Invoice (B2B)</option>
+        </select>
+      </div>
+      <div>
+        <label>Date</label>
+        <input type="date" id="invDate">
+      </div>
+      <div>
+        <label>Party</label>
+        <select id="partySelect"><option value="">-- Select Party --</option></select>
+      </div>
+      <div>
+        <label>Payment Mode</label>
+        <select id="paymentMode">
+          <option value="cash">Cash</option>
+          <option value="udhaari">Udhaari (Credit)</option>
+          <option value="online">Online</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>वस्तू (Items)</h3>
+    <div id="itemsContainer"></div>
+    <button class="secondary" onclick="addItemRow()">+ वस्तू जोडा</button>
+
+    <div class="totals">
+      <div>Subtotal: <b id="subtotalDisp">₹0</b></div>
+      <div>GST: <b id="gstDisp">₹0</b></div>
+      <div>Total: <b id="totalDisp">₹0</b></div>
+    </div>
+
+    <div class="row" style="margin-top:12px;">
+      <div>
+        <label>Paid Amount</label>
+        <input type="number" id="paidAmount" value="0" oninput="updateTotals()">
+      </div>
+      <div>
+        <label>Balance (Due)</label>
+        <input id="balanceDisp" readonly>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;">
+      <button class="primary" onclick="saveInvoice()">✅ बिल सेव्ह करा</button>
+      <button class="secondary" onclick="resetBillingForm()">🔄 Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PRODUCTS TAB ================= -->
+<div id="tab-products" class="hidden">
+  <div class="card">
+    <h3>नवीन वस्तू जोडा</h3>
+    <div class="row">
+      <div><label>नाव</label><input id="pName"></div>
+      <div><label>Category</label>
+        <select id="pCategory"><option value="fertilizer">Fertilizer</option><option value="seed">Seed</option><option value="pesticide">Pesticide</option><option value="other">Other</option></select>
+      </div>
+      <div><label>HSN Code</label><input id="pHsn"></div>
+      <div><label>Unit Type</label>
+        <select id="pUnitType"><option value="kg">Kg (Loose)</option><option value="bag">Bag</option><option value="gram">Gram</option></select>
+      </div>
+    </div>
+    <div class="row">
+      <div><label>Pack Size (kg per bag, if bag)</label><input type="number" id="pPackSize"></div>
+      <div><label>GST %</label><input type="number" id="pGst" value="5"></div>
+      <div><label>Purchase Price</label><input type="number" id="pPurchasePrice"></div>
+      <div><label>Sale Price</label><input type="number" id="pSalePrice"></div>
+    </div>
+    <div class="row">
+      <div><label>Opening Stock (kg)</label><input type="number" id="pOpeningStock" value="0"></div>
+      <div><label>Low Stock Alert (kg)</label><input type="number" id="pLowStock" value="0"></div>
+    </div>
+    <button class="primary" onclick="saveProduct()">➕ वस्तू सेव्ह करा</button>
+  </div>
+
+  <div class="card">
+    <h3>स्टॉक यादी</h3>
+    <table id="productsTable">
+      <thead><tr><th>नाव</th><th>Category</th><th>Unit</th><th>Sale ₹</th><th>Stock (kg)</th><th>Status</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ================= PARTIES TAB ================= -->
+<div id="tab-parties" class="hidden">
+  <div class="card">
+    <h3>नवीन पार्टी जोडा (शेतकरी / ग्राहक / पुरवठादार)</h3>
+    <div class="row">
+      <div><label>नाव</label><input id="ptName"></div>
+      <div><label>Phone</label><input id="ptPhone"></div>
+      <div><label>Village</label><input id="ptVillage"></div>
+      <div><label>GSTIN (optional)</label><input id="ptGstin"></div>
+    </div>
+    <div class="row">
+      <div><label>Type</label>
+        <select id="ptType"><option value="customer">Customer</option><option value="supplier">Supplier</option><option value="both">Both</option></select>
+      </div>
+      <div><label>Opening Balance (Udhaari)</label><input type="number" id="ptOpening" value="0"></div>
+    </div>
+    <button class="primary" onclick="saveParty()">➕ पार्टी सेव्ह करा</button>
+  </div>
+
+  <div class="card">
+    <h3>पार्टी यादी</h3>
+    <table>
+      <thead><tr><th>नाव</th><th>Phone</th><th>Village</th><th>Type</th><th>Opening Bal</th></tr></thead>
+      <tbody id="partiesTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ================= INVOICES TAB ================= -->
+<div id="tab-invoices" class="hidden">
+  <div class="card">
+    <h3>बिल इतिहास</h3>
+    <table>
+      <thead><tr><th>Invoice No</th><th>Date</th><th>Party</th><th>Format</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+      <tbody id="invoicesTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ================= LEDGER TAB ================= -->
+<div id="tab-ledger" class="hidden">
+  <div class="card">
+    <h3>पार्टी निवडा</h3>
+    <select id="ledgerPartySelect" onchange="loadLedger()"><option value="">-- Select Party --</option></select>
+  </div>
+  <div class="card">
+    <h3>उधारी नोंदी</h3>
+    <table>
+      <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Notes</th></tr></thead>
+      <tbody id="ledgerTable"></tbody>
+    </table>
+    <div class="totals"><div>एकूण उधारी शिल्लक: <b id="ledgerTotal">₹0</b></div></div>
+  </div>
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL = "https://rsutnfwigyefwbvbpjwl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzdXRuZndpZ3llZndidmJwandsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMjM3NTUsImV4cCI6MjA5ODc5OTc1NX0.NKkpy0JjzmRajrlrsAyAG7WsD-bsLSRvZTcJ5aYnR7Y";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let products = [];
+let parties = [];
+let itemRowCount = 0;
+
+// ============================================================
+// INIT
+// ============================================================
+async function init(){
+  document.getElementById('invDate').value = new Date().toISOString().split('T')[0];
+  try{
+    const { error } = await sb.from('parties').select('id').limit(1);
+    if(error) throw error;
+    document.getElementById('connStatus').textContent = "✅ Connected to Supabase";
+  }catch(e){
+    document.getElementById('connStatus').textContent = "⚠️ Connection issue: " + e.message;
+  }
+  await loadProducts();
+  await loadParties();
+  await loadInvoices();
+  generateInvoiceNo();
+  addItemRow();
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+function showTab(name){
+  ['billing','products','parties','invoices','ledger'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('hidden', t!==name);
+  });
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ============================================================
+// PRODUCTS
+// ============================================================
+async function loadProducts(){
+  const { data, error } = await sb.from('products').select('*').order('name');
+  if(error){ showToast('Error loading products: '+error.message); return; }
+  products = data || [];
+  renderProductsTable();
+  renderProductDropdowns();
+}
+
+function renderProductsTable(){
+  const tbody = document.querySelector('#productsTable tbody');
+  tbody.innerHTML = products.map(p=>{
+    const low = p.low_stock_alert_kg && p.current_stock_kg <= p.low_stock_alert_kg;
+    return `<tr>
+      <td>${p.name}</td><td>${p.category}</td><td>${p.unit_type}</td>
+      <td>₹${p.sale_price}</td><td>${p.current_stock_kg}</td>
+      <td>${low ? '<span class="tag due">Low Stock</span>' : '<span class="tag paid">OK</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function saveProduct(){
+  const name = document.getElementById('pName').value.trim();
+  if(!name){ showToast('वस्तूचे नाव टाका'); return; }
+  const payload = {
+    name,
+    category: document.getElementById('pCategory').value,
+    hsn_code: document.getElementById('pHsn').value,
+    unit_type: document.getElementById('pUnitType').value,
+    pack_size_kg: parseFloat(document.getElementById('pPackSize').value)||null,
+    gst_percent: parseFloat(document.getElementById('pGst').value)||0,
+    purchase_price: parseFloat(document.getElementById('pPurchasePrice').value)||0,
+    sale_price: parseFloat(document.getElementById('pSalePrice').value)||0,
+    current_stock_kg: parseFloat(document.getElementById('pOpeningStock').value)||0,
+    low_stock_alert_kg: parseFloat(document.getElementById('pLowStock').value)||0
+  };
+  const { error } = await sb.from('products').insert(payload);
+  if(error){ showToast('Error: '+error.message); return; }
+  showToast('✅ वस्तू सेव्ह झाली');
+  ['pName','pHsn','pPackSize','pPurchasePrice','pSalePrice','pOpeningStock','pLowStock'].forEach(id=>document.getElementById(id).value='');
+  await loadProducts();
+}
+
+// ============================================================
+// PARTIES
+// ============================================================
+async function loadParties(){
+  const { data, error } = await sb.from('parties').select('*').order('name');
+  if(error){ showToast('Error loading parties: '+error.message); return; }
+  parties = data || [];
+  renderPartiesTable();
+  renderPartyDropdowns();
+}
+
+function renderPartiesTable(){
+  document.getElementById('partiesTable').innerHTML = parties.map(p=>`
+    <tr><td>${p.name}</td><td>${p.phone||''}</td><td>${p.village||''}</td><td>${p.party_type}</td><td>₹${p.opening_balance}</td></tr>
+  `).join('');
+}
+
+function renderPartyDropdowns(){
+  const opts = '<option value="">-- Select Party --</option>' + parties.map(p=>`<option value="${p.id}">${p.name}${p.village? ' ('+p.village+')':''}</option>`).join('');
+  document.getElementById('partySelect').innerHTML = opts;
+  document.getElementById('ledgerPartySelect').innerHTML = opts;
+}
+
+async function saveParty(){
+  const name = document.getElementById('ptName').value.trim();
+  if(!name){ showToast('पार्टीचे नाव टाका'); return; }
+  const payload = {
+    name,
+    phone: document.getElementById('ptPhone').value,
+    village: document.getElementById('ptVillage').value,
+    gstin: document.getElementById('ptGstin').value,
+    party_type: document.getElementById('ptType').value,
+    opening_balance: parseFloat(document.getElementById('ptOpening').value)||0
+  };
+  const { error } = await sb.from('parties').insert(payload);
+  if(error){ showToast('Error: '+error.message); return; }
+  showToast('✅ पार्टी सेव्ह झाली');
+  ['ptName','ptPhone','ptVillage','ptGstin','ptOpening'].forEach(id=>document.getElementById(id).value='');
+  await loadParties();
+}
+
+// ============================================================
+// BILLING - ITEM ROWS
+// ============================================================
+function renderProductDropdowns(){
+  document.querySelectorAll('.item-product').forEach(sel=>{
+    const current = sel.value;
+    sel.innerHTML = '<option value="">-- वस्तू निवडा --</option>' + products.map(p=>`<option value="${p.id}">${p.name} (₹${p.sale_price}/kg)</option>`).join('');
+    sel.value = current;
+  });
+}
+
+function addItemRow(){
+  itemRowCount++;
+  const id = itemRowCount;
+  const div = document.createElement('div');
+  div.className = 'item-row';
+  div.id = 'itemRow'+id;
+  div.innerHTML = `
+    <div><label>वस्तू</label><select class="item-product" onchange="onProductChange(${id})"></select></div>
+    <div><label>Qty (kg)</label><input type="number" class="item-qty" oninput="calcRow(${id})"></div>
+    <div><label>Rate (₹/kg)</label><input type="number" class="item-rate" oninput="calcRow(${id})"></div>
+    <div><label>GST %</label><input type="number" class="item-gst" oninput="calcRow(${id})"></div>
+    <div><label>Amount</label><input type="text" class="item-amount" readonly></div>
+    <button class="remove-btn" onclick="removeItemRow(${id})">✕</button>
+  `;
+  document.getElementById('itemsContainer').appendChild(div);
+  renderProductDropdowns();
+}
+
+function removeItemRow(id){
+  const el = document.getElementById('itemRow'+id);
+  if(el) el.remove();
+  updateTotals();
+}
+
+function onProductChange(id){
+  const row = document.getElementById('itemRow'+id);
+  const prodId = row.querySelector('.item-product').value;
+  const prod = products.find(p=>p.id===prodId);
+  if(prod){
+    row.querySelector('.item-rate').value = prod.sale_price;
+    row.querySelector('.item-gst').value = prod.gst_percent;
+  }
+  calcRow(id);
+}
+
+function calcRow(id){
+  const row = document.getElementById('itemRow'+id);
+  const qty = parseFloat(row.querySelector('.item-qty').value)||0;
+  const rate = parseFloat(row.querySelector('.item-rate').value)||0;
+  const gst = parseFloat(row.querySelector('.item-gst').value)||0;
+  const base = qty*rate;
+  const amount = base + (base*gst/100);
+  row.querySelector('.item-amount').value = '₹'+amount.toFixed(2);
+  updateTotals();
+}
+
+function updateTotals(){
+  let subtotal=0, gstTotal=0;
+  document.querySelectorAll('.item-row').forEach(row=>{
+    const qty = parseFloat(row.querySelector('.item-qty').value)||0;
+    const rate = parseFloat(row.querySelector('.item-rate').value)||0;
+    const gst = parseFloat(row.querySelector('.item-gst').value)||0;
+    const base = qty*rate;
+    subtotal += base;
+    gstTotal += base*gst/100;
+  });
+  const total = subtotal+gstTotal;
+  const paid = parseFloat(document.getElementById('paidAmount').value)||0;
+  const balance = total-paid;
+  document.getElementById('subtotalDisp').textContent = '₹'+subtotal.toFixed(2);
+  document.getElementById('gstDisp').textContent = '₹'+gstTotal.toFixed(2);
+  document.getElementById('totalDisp').textContent = '₹'+total.toFixed(2);
+  document.getElementById('balanceDisp').value = '₹'+balance.toFixed(2);
+}
+
+async function generateInvoiceNo(){
+  const { count } = await sb.from('invoices').select('*', {count:'exact', head:true});
+  document.getElementById('invNo').value = 'NVA-' + String((count||0)+1).padStart(4,'0');
+}
+
+function resetBillingForm(){
+  document.getElementById('itemsContainer').innerHTML='';
+  document.getElementById('partySelect').value='';
+  document.getElementById('paidAmount').value=0;
+  generateInvoiceNo();
+  addItemRow();
+  updateTotals();
+}
+
+// ============================================================
+// SAVE INVOICE
+// ============================================================
+async function saveInvoice(){
+  const rows = document.querySelectorAll('.item-row');
+  if(rows.length===0){ showToast('किमान एक वस्तू टाका'); return; }
+
+  let subtotal=0, gstTotal=0;
+  const items = [];
+  for(const row of rows){
+    const prodId = row.querySelector('.item-product').value;
+    const qty = parseFloat(row.querySelector('.item-qty').value)||0;
+    const rate = parseFloat(row.querySelector('.item-rate').value)||0;
+    const gst = parseFloat(row.querySelector('.item-gst').value)||0;
+    if(!prodId || qty<=0){ continue; }
+    const base = qty*rate;
+    const amount = base + (base*gst/100);
+    subtotal += base; gstTotal += base*gst/100;
+    items.push({ product_id: prodId, qty_kg: qty, rate, gst_percent: gst, amount });
+  }
+  if(items.length===0){ showToast('वैध वस्तू निवडा आणि प्रमाण टाका'); return; }
+
+  const total = subtotal+gstTotal;
+  const paid = parseFloat(document.getElementById('paidAmount').value)||0;
+  const balance = total-paid;
+  const partyId = document.getElementById('partySelect').value || null;
+
+  const invoicePayload = {
+    invoice_no: document.getElementById('invNo').value,
+    invoice_type: 'sale',
+    bill_format: document.getElementById('billFormat').value,
+    party_id: partyId,
+    invoice_date: document.getElementById('invDate').value,
+    subtotal, gst_amount: gstTotal, total_amount: total,
+    paid_amount: paid, balance_amount: balance,
+    payment_mode: document.getElementById('paymentMode').value
+  };
+
+  const { data: invData, error: invErr } = await sb.from('invoices').insert(invoicePayload).select().single();
+  if(invErr){ showToast('Error saving invoice: '+invErr.message); return; }
+
+  const itemsPayload = items.map(it=>({ ...it, invoice_id: invData.id }));
+  const { error: itemsErr } = await sb.from('invoice_items').insert(itemsPayload);
+  if(itemsErr){ showToast('Error saving items: '+itemsErr.message); return; }
+
+  // Update stock + stock movements
+  for(const it of items){
+    const prod = products.find(p=>p.id===it.product_id);
+    if(prod){
+      const newStock = (prod.current_stock_kg||0) - it.qty_kg;
+      await sb.from('products').update({ current_stock_kg: newStock }).eq('id', prod.id);
+      await sb.from('stock_movements').insert({
+        product_id: prod.id, movement_type: 'sale_out', qty_kg: -it.qty_kg, reference_invoice_id: invData.id
+      });
+    }
+  }
+
+  // Ledger entry if udhaari (credit)
+  if(partyId && balance > 0){
+    await sb.from('ledger_entries').insert({
+      party_id: partyId, entry_type: 'invoice', reference_invoice_id: invData.id,
+      amount: balance, notes: 'Invoice '+invData.invoice_no+' outstanding'
+    });
+  }
+
+  showToast('✅ बिल यशस्वीरित्या सेव्ह झाले!');
+  resetBillingForm();
+  await loadProducts();
+  await loadInvoices();
+}
+
+// ============================================================
+// INVOICE HISTORY
+// ============================================================
+async function loadInvoices(){
+  const { data, error } = await sb.from('invoices').select('*, parties(name)').order('created_at', {ascending:false}).limit(100);
+  if(error){ showToast('Error: '+error.message); return; }
+  document.getElementById('invoicesTable').innerHTML = (data||[]).map(inv=>`
+    <tr>
+      <td>${inv.invoice_no}</td><td>${inv.invoice_date}</td>
+      <td>${inv.parties?.name || '-'}</td><td>${inv.bill_format}</td>
+      <td>₹${inv.total_amount}</td><td>₹${inv.paid_amount}</td><td>₹${inv.balance_amount}</td>
+      <td>${inv.balance_amount>0 ? '<span class="tag due">Due</span>' : '<span class="tag paid">Paid</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+// ============================================================
+// LEDGER
+// ============================================================
+async function loadLedger(){
+  const partyId = document.getElementById('ledgerPartySelect').value;
+  if(!partyId){ document.getElementById('ledgerTable').innerHTML=''; document.getElementById('ledgerTotal').textContent='₹0'; return; }
+  const { data, error } = await sb.from('ledger_entries').select('*').eq('party_id', partyId).order('entry_date');
+  if(error){ showToast('Error: '+error.message); return; }
+  let total = 0;
+  document.getElementById('ledgerTable').innerHTML = (data||[]).map(l=>{
+    total += l.amount;
+    return `<tr><td>${l.entry_date}</td><td>${l.entry_type}</td><td>₹${l.amount}</td><td>${l.notes||''}</td></tr>`;
+  }).join('');
+  document.getElementById('ledgerTotal').textContent = '₹'+total.toFixed(2);
+}
+
+init();
+</script>
+</body>
+</html>
