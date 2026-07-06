@@ -4,1169 +4,1972 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>New Venktesh Agro Agency - ERP</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/supabase/2.39.0/supabase.min.js"></script>
 <style>
-  :root{
-    --green:#1e7d34; --green-dark:#155a26; --bg:#f3f6f2; --card:#ffffff;
-    --border:#d9e2d6; --text:#1f2a22; --muted:#6b7a70; --danger:#c0392b; --warn:#b8860b;
-  }
-  *{box-sizing:border-box;}
-  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);}
-  header{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-  header h1{font-size:18px;margin:0;}
-  header .status{font-size:12px;opacity:.9;}
-  nav{display:flex;gap:4px;background:#fff;padding:6px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap;overflow-x:auto;}
-  nav button{background:none;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap;}
-  nav button.active{background:var(--green);color:#fff;}
-  main{padding:16px;max-width:1200px;margin:0 auto;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;}
-  .row{display:flex;gap:10px;flex-wrap:wrap;}
-  .row > div{flex:1;min-width:150px;}
-  label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;}
-  input,select{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;}
-  button.primary{background:var(--green);color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:14px;cursor:pointer;font-weight:600;}
-  button.secondary{background:#eef2ec;color:var(--text);border:1px solid var(--border);padding:8px 14px;border-radius:6px;cursor:pointer;}
-  button.danger-btn{background:var(--danger);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;}
-  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
-  th,td{border:1px solid var(--border);padding:7px 8px;text-align:left;}
-  th{background:#eef4ec;}
-  .totals{display:flex;justify-content:flex-end;gap:24px;margin-top:10px;font-size:14px;flex-wrap:wrap;}
-  .totals b{color:var(--green-dark);}
-  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
-  .tag.due{background:#fde8e6;color:var(--danger);}
-  .tag.paid{background:#e6f4ea;color:var(--green-dark);}
-  .tag.warn{background:#fdf3d9;color:var(--warn);}
-  .hidden{display:none !important;}
-  .small{font-size:12px;color:var(--muted);}
-  .toast{position:fixed;bottom:20px;right:20px;background:var(--green-dark);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;}
-  .toast.show{opacity:1;}
-  .item-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr auto;gap:6px;align-items:end;margin-bottom:8px;}
-  .remove-btn{background:var(--danger);color:#fff;border:none;border-radius:6px;padding:8px;cursor:pointer;}
-  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
-  .kpi{background:#eef4ec;border-radius:10px;padding:14px;text-align:center;}
-  .kpi .val{font-size:22px;font-weight:700;color:var(--green-dark);}
-  .kpi .lbl{font-size:12px;color:var(--muted);margin-top:4px;}
-  .lock-screen{position:fixed;inset:0;background:var(--green-dark);display:flex;align-items:center;justify-content:center;z-index:1000;}
-  .lock-box{background:#fff;padding:30px;border-radius:14px;width:280px;text-align:center;}
-  .lock-box input{text-align:center;font-size:22px;letter-spacing:8px;margin:14px 0;}
-  .search-bar{margin-bottom:10px;}
-  .tab-section{display:none;}
-  .tab-section.active-section{display:block;}
-  @media print{
-    header,nav,.no-print{display:none !important;}
-    body{background:#fff;}
-    main{padding:0;max-width:100%;}
-    .print-only{display:block !important;}
-  }
-  .print-only{display:none;}
-  .invoice-print{width:48%;display:inline-block;vertical-align:top;border:1px dashed #999;padding:12px;font-size:12px;box-sizing:border-box;}
-  .invoice-print h2{font-size:14px;margin:0 0 4px;}
-  .invoice-print table{font-size:11px;}
+:root{
+  --green-900:#064e3b;--green-800:#065f46;--green-700:#047857;
+  --green-600:#059669;--green-500:#10b981;--green-400:#34d399;
+  --green-100:#d1fae5;--green-50:#ecfdf5;
+  --red:#dc2626;--orange:#f59e0b;--blue:#2563eb;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-300:#d1d5db;--gray-500:#6b7280;--gray-700:#374151;
+  --gray-900:#111827;
+  --shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:var(--gray-50);color:var(--gray-900);min-height:100vh}
+
+/* LOCK SCREEN */
+#lockScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--green-700),var(--green-900));display:flex;align-items:center;justify-content:center;z-index:9999}
+.lock-box{background:#fff;padding:40px;border-radius:20px;box-shadow:var(--shadow-lg);text-align:center;width:90%;max-width:400px;animation:slideUp .5s ease}
+.lock-box h1{color:var(--green-800);margin-bottom:8px;font-size:24px}
+.lock-box p{color:var(--gray-500);margin-bottom:24px;font-size:14px}
+.lock-box input{width:100%;padding:14px;border:2px solid var(--gray-200);border-radius:10px;font-size:18px;text-align:center;letter-spacing:8px;transition:.3s}
+.lock-box input:focus{outline:none;border-color:var(--green-500)}
+.lock-box button{width:100%;margin-top:16px;padding:14px;background:var(--green-600);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s}
+.lock-box button:hover{background:var(--green-700);transform:translateY(-2px)}
+.lock-error{color:var(--red);font-size:13px;margin-top:10px;min-height:18px}
+
+/* LAYOUT */
+#app{display:none;min-height:100vh}
+header{background:linear-gradient(135deg,var(--green-700),var(--green-800));color:#fff;padding:14px 20px;box-shadow:var(--shadow);position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+header h1{font-size:18px;display:flex;align-items:center;gap:10px}
+header h1::before{content:"🌾";font-size:24px}
+.header-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fy-select{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:6px 12px;border-radius:6px;font-size:13px;cursor:pointer}
+.fy-select option{color:#000}
+.btn-logout{background:rgba(255,255,255,.2);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s}
+.btn-logout:hover{background:rgba(255,255,255,.3)}
+
+/* TABS */
+nav.tabs{background:#fff;border-bottom:1px solid var(--gray-200);overflow-x:auto;white-space:nowrap;position:sticky;top:60px;z-index:99;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+nav.tabs::-webkit-scrollbar{height:4px}
+nav.tabs::-webkit-scrollbar-thumb{background:var(--green-500);border-radius:2px}
+.tab-btn{background:none;border:none;padding:14px 18px;cursor:pointer;font-size:14px;color:var(--gray-700);font-weight:500;border-bottom:3px solid transparent;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.tab-btn:hover{background:var(--green-50);color:var(--green-700)}
+.tab-btn.active{color:var(--green-700);border-bottom-color:var(--green-600);background:var(--green-50)}
+
+/* MAIN */
+main{padding:20px;max-width:1400px;margin:0 auto}
+.page{display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+.page-title{font-size:22px;color:var(--green-800);margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.page-title .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px;animation:slideUp .4s ease}
+.card-title{font-size:16px;font-weight:600;color:var(--green-800);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* DASHBOARD STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--shadow);border-left:4px solid var(--green-500);transition:.3s;cursor:pointer;animation:slideUp .4s ease}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.stat-card.red{border-left-color:var(--red)}
+.stat-card.orange{border-left-color:var(--orange)}
+.stat-card.blue{border-left-color:var(--blue)}
+.stat-label{font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:700;color:var(--gray-900)}
+.stat-sub{font-size:12px;color:var(--gray-500);margin-top:4px}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:13px;color:var(--gray-700);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;transition:.2s;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--green-500);box-shadow:0 0 0 3px rgba(16,185,129,.1)}
+.form-group textarea{resize:vertical;min-height:60px}
+
+/* BUTTONS */
+.btn{padding:9px 16px;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--green-600);color:#fff}
+.btn-primary:hover{background:var(--green-700)}
+.btn-secondary{background:var(--gray-200);color:var(--gray-700)}
+.btn-secondary:hover{background:var(--gray-300)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-warning{background:var(--orange);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-icon{padding:6px 10px;font-size:13px}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;background:#fff;border-radius:12px;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead{background:var(--green-50)}
+th{padding:12px;text-align:left;font-weight:600;color:var(--green-800);font-size:13px;border-bottom:2px solid var(--green-100);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--gray-100)}
+tbody tr{transition:.15s}
+tbody tr:hover{background:var(--green-50)}
+td.actions{display:flex;gap:4px;flex-wrap:nowrap}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search-bar input,.search-bar select{padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;min-width:180px;flex:1}
+.search-bar input:focus,.search-bar select:focus{outline:none;border-color:var(--green-500)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;animation:fadeIn .2s}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp .3s;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-200)}
+.modal-header h2{color:var(--green-800);font-size:18px}
+.modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--gray-500);width:32px;height:32px;border-radius:50%;transition:.2s}
+.modal-close:hover{background:var(--gray-100);color:var(--gray-900)}
+
+/* TOAST */
+#toastContainer{position:fixed;top:80px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{background:#fff;padding:12px 18px;border-radius:8px;box-shadow:var(--shadow-lg);border-left:4px solid var(--green-500);min-width:250px;animation:slideInRight .3s;display:flex;align-items:center;gap:10px}
+.toast.error{border-left-color:var(--red)}
+.toast.warning{border-left-color:var(--orange)}
+.toast.info{border-left-color:var(--blue)}
+
+/* LOADING */
+.loader{display:inline-block;width:16px;height:16px;border:2px solid var(--gray-200);border-top-color:var(--green-600);border-radius:50%;animation:spin .8s linear infinite}
+.loading-overlay{position:absolute;inset:0;background:rgba(255,255,255,.7);display:none;align-items:center;justify-content:center;z-index:10;border-radius:12px}
+.loading-overlay.show{display:flex}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-green{background:var(--green-100);color:var(--green-800)}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-orange{background:#fed7aa;color:#9a3412}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-gray{background:var(--gray-200);color:var(--gray-700)}
+
+/* TOGGLE */
+.toggle{position:relative;display:inline-block;width:44px;height:24px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--gray-300);border-radius:24px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked + .toggle-slider{background:var(--green-500)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px)}
+
+/* BILLING ITEMS TABLE */
+.items-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.items-table th,.items-table td{padding:6px 8px;border:1px solid var(--gray-200);text-align:left}
+.items-table th{background:var(--green-50);font-size:12px}
+.items-table input,.items-table select{width:100%;padding:4px 6px;border:1px solid var(--gray-200);border-radius:4px;font-size:13px}
+.items-table input:focus,.items-table select:focus{outline:none;border-color:var(--green-500)}
+
+/* BILL SUMMARY */
+.bill-summary{background:var(--green-50);padding:14px;border-radius:10px;margin-top:12px}
+.bill-summary .row{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
+.bill-summary .total{font-size:18px;font-weight:700;color:var(--green-800);border-top:2px solid var(--green-600);padding-top:8px;margin-top:6px}
+
+/* ALERTS */
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:10px;animation:slideUp .3s}
+.alert-warning{background:#fef3c7;color:#92400e;border-left:4px solid var(--orange)}
+.alert-danger{background:#fee2e2;color:#991b1b;border-left:4px solid var(--red)}
+.alert-info{background:#dbeafe;color:#1e40af;border-left:4px solid var(--blue)}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  header h1{font-size:15px}
+  .tab-btn{padding:12px 12px;font-size:13px}
+  main{padding:12px}
+  .stat-value{font-size:20px}
+  .page-title{font-size:18px}
+  .form-grid{grid-template-columns:1fr}
+  table{font-size:12px}
+  th,td{padding:6px 8px}
+}
+
+/* PRINT STYLES */
+@media print{
+  header,nav.tabs,.actions,.search-bar,.no-print{display:none !important}
+  body{background:#fff}
+  .card{box-shadow:none;page-break-inside:avoid}
+  .print-area{display:block !important}
+  @page{size:A5;margin:8mm}
+}
+.print-area{display:none}
+
+/* INVOICE PRINT TEMPLATE */
+.invoice-print{font-family:Arial,sans-serif;padding:10mm;max-width:210mm;margin:0 auto}
+.invoice-print .inv-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:10px}
+.invoice-print .inv-header h2{font-size:18px;margin:4px 0}
+.invoice-print .inv-header p{font-size:11px;margin:2px 0}
+.invoice-print .inv-meta{display:flex;justify-content:space-between;font-size:11px;margin:8px 0}
+.invoice-print table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+.invoice-print table th,.invoice-print table td{border:1px solid #000;padding:4px 6px}
+.invoice-print .inv-footer{margin-top:12px;font-size:11px}
+.invoice-print .inv-footer .sign{text-align:right;margin-top:30px}
 </style>
 </head>
 <body>
 
-<!-- ===================== PIN LOCK SCREEN ===================== -->
-<div class="lock-screen no-print" id="lockScreen">
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
   <div class="lock-box">
-    <h2>🔒 New Venktesh Agro ERP</h2>
-    <p class="small" id="lockMsg">PIN टाका (पहिल्यांदा असल्यास नवीन PIN सेट होईल)</p>
-    <input type="password" id="pinInput" maxlength="6" inputmode="numeric">
-    <button class="primary" style="width:100%" onclick="checkPin()">Unlock</button>
+    <h1>🌾 New Venktesh Agro Agency</h1>
+    <p>ERP प्रणालीमध्ये प्रवेश करण्यासाठी PIN टाका</p>
+    <input type="password" id="pinInput" maxlength="6" placeholder="••••" autocomplete="off">
+    <button onclick="unlockApp()">🔓 प्रवेश करा</button>
+    <div class="lock-error" id="lockError"></div>
+    <p style="margin-top:20px;font-size:11px;color:var(--gray-500)">Default PIN: <b>1234</b> (पहिल्यांदा सेट करा)</p>
   </div>
 </div>
 
-<div id="appRoot" class="hidden">
-
-<header>
-  <h1>🌾 New Venktesh Agro Agency - ERP</h1>
-  <div class="status" id="connStatus">Connecting...</div>
-</header>
-
-<nav>
-  <button class="active" onclick="showTab('dashboard',event)">🏠 Home</button>
-  <button onclick="showTab('billing',event)">🧾 Billing</button>
-  <button onclick="showTab('quotation',event)">📄 Quotation</button>
-  <button onclick="showTab('products',event)">📦 Stock</button>
-  <button onclick="showTab('parties',event)">👥 Parties</button>
-  <button onclick="showTab('invoices',event)">📋 Invoices</button>
-  <button onclick="showTab('ledger',event)">💰 Ledger</button>
-  <button onclick="showTab('reports',event)">📊 Reports</button>
-  <button onclick="showTab('backup',event)">💾 Backup</button>
-</nav>
-
-<main>
-
-<!-- ================= DASHBOARD ================= -->
-<div id="tab-dashboard" class="tab-section active-section">
-  <div class="card">
-    <h3>आजची स्थिती</h3>
-    <div class="kpi-grid">
-      <div class="kpi"><div class="val" id="kpiTodaySales">₹0</div><div class="lbl">आजची विक्री</div></div>
-      <div class="kpi"><div class="val" id="kpiTodayRecovery">₹0</div><div class="lbl">आजची उधारी वसुली</div></div>
-      <div class="kpi"><div class="val" id="kpiOutstanding">₹0</div><div class="lbl">एकूण थकीत उधारी</div></div>
-      <div class="kpi"><div class="val" id="kpiLowStock">0</div><div class="lbl">Low Stock वस्तू</div></div>
+<!-- MAIN APP -->
+<div id="app">
+  <header>
+    <h1>New Venktesh Agro Agency ERP</h1>
+    <div class="header-right">
+      <select class="fy-select" id="fySelect" onchange="changeFY()"></select>
+      <button class="btn-logout" onclick="lockApp()">🔒 लॉक</button>
     </div>
-  </div>
-  <div class="card">
-    <h3>🔥 सर्वाधिक विकल्या जाणाऱ्या वस्तू (Top 5)</h3>
-    <table><thead><tr><th>वस्तू</th><th>एकूण विक्री (kg)</th></tr></thead><tbody id="topProductsTable"></tbody></table>
-  </div>
-  <div class="card">
-    <h3>⚠️ Expiry जवळ आलेला माल</h3>
-    <table><thead><tr><th>वस्तू</th><th>Batch</th><th>Expiry Date</th></tr></thead><tbody id="expiryAlertTable"></tbody></table>
-  </div>
-</div>
+  </header>
 
-<!-- ================= BILLING ================= -->
-<div id="tab-billing" class="tab-section">
-  <div class="card">
-    <h3>बिल बनवा</h3>
-    <div class="row">
-      <div>
-        <label>Invoice Type</label>
-        <select id="invType" onchange="onInvTypeChange()">
-          <option value="sale">Sales Invoice</option>
-          <option value="purchase">Purchase Invoice</option>
-          <option value="sales_return">Sales Return</option>
-          <option value="purchase_return">Purchase Return</option>
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="showPage('dashboard',this)">🏠 डॅशबोर्ड</button>
+    <button class="tab-btn" onclick="showPage('billing',this)">🧾 बिलिंग</button>
+    <button class="tab-btn" onclick="showPage('quotations',this)">📋 कोटेशन</button>
+    <button class="tab-btn" onclick="showPage('inventory',this)">📦 स्टॉक</button>
+    <button class="tab-btn" onclick="showPage('parties',this)">👥 पार्ट्या</button>
+    <button class="tab-btn" onclick="showPage('ledger',this)">💰 लेजर</button>
+    <button class="tab-btn" onclick="showPage('staff',this)">👨‍💼 कर्मचारी</button>
+    <button class="tab-btn" onclick="showPage('reports',this)">📊 अहवाल</button>
+    <button class="tab-btn" onclick="showPage('settings',this)">⚙️ सेटिंग्ज</button>
+    <button class="tab-btn" onclick="showPage('backup',this)">💾 बॅकअप</button>
+  </nav>
+
+  <main>
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-title">🏠 डॅशबोर्ड <span id="todayDate" style="font-size:14px;color:var(--gray-500);font-weight:normal"></span></div>
+      <div id="alertsContainer"></div>
+      <div class="stats-grid" id="dashStats"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+        <div class="card">
+          <div class="card-title">🔥 आजचे टॉप 5 उत्पादने</div>
+          <div id="topProducts"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">⚠️ कमी स्टॉक</div>
+          <div id="lowStockList"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">⏰ जवळची एक्सपायरी</div>
+          <div id="expiryList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BILLING -->
+    <div id="page-billing" class="page">
+      <div class="page-title">🧾 बिलिंग
+        <div class="actions">
+          <button class="btn btn-primary" onclick="openBillModal('sales')">➕ नवीन विक्री बिल</button>
+          <button class="btn btn-secondary" onclick="openBillModal('purchase')">➕ खरेदी बिल</button>
+          <button class="btn btn-warning" onclick="openBillModal('sales_return')">↩️ विक्री परतावा</button>
+          <button class="btn btn-warning" onclick="openBillModal('purchase_return')">↩️ खरेदी परतावा</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="billSearch" placeholder="🔍 Invoice # / पार्टी शोधा..." oninput="loadInvoices()">
+        <select id="billTypeFilter" onchange="loadInvoices()">
+          <option value="">सर्व प्रकार</option>
+          <option value="sales">विक्री</option>
+          <option value="purchase">खरेदी</option>
+          <option value="sales_return">विक्री परतावा</option>
+          <option value="purchase_return">खरेदी परतावा</option>
+        </select>
+        <input type="date" id="billDateFrom" onchange="loadInvoices()">
+        <input type="date" id="billDateTo" onchange="loadInvoices()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>तारीख</th><th>Invoice #</th><th>प्रकार</th><th>पार्टी</th><th>रक्कम</th><th>शिल्लक</th><th>कृती</th></tr></thead>
+          <tbody id="invoicesTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- QUOTATIONS -->
+    <div id="page-quotations" class="page">
+      <div class="page-title">📋 कोटेशन / अंदाजपत्रक
+        <div class="actions"><button class="btn btn-primary" onclick="openQuotationModal()">➕ नवीन कोटेशन</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>तारीख</th><th>Quotation #</th><th>पार्टी</th><th>रक्कम</th><th>स्थिती</th><th>कृती</th></tr></thead>
+          <tbody id="quotationsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="page-inventory" class="page">
+      <div class="page-title">📦 स्टॉक / इन्व्हेंटरी
+        <div class="actions">
+          <button class="btn btn-primary" onclick="openProductModal()">➕ नवीन उत्पादन</button>
+          <button class="btn btn-secondary" onclick="openStockAdjustModal()">🔧 स्टॉक समायोजन</button>
+          <button class="btn btn-secondary" onclick="printRateList()">🖨️ रेट लिस्ट</button>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="prodSearch" placeholder="🔍 उत्पादन / HSN / बॅच शोधा..." oninput="loadProducts()">
+        <select id="prodCategoryFilter" onchange="loadProducts()"><option value="">सर्व श्रेणी</option></select>
+        <select id="prodStockFilter" onchange="loadProducts()">
+          <option value="">सर्व स्टॉक</option>
+          <option value="low">कमी स्टॉक</option>
+          <option value="out">शून्य स्टॉक</option>
+          <option value="expiry">एक्सपायरी जवळ</option>
         </select>
       </div>
-      <div>
-        <label>Invoice No.</label>
-        <input id="invNo" readonly>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>नाव</th><th>श्रेणी</th><th>HSN</th><th>युनिट</th><th>खरेदी</th><th>विक्री</th><th>GST%</th><th>स्टॉक</th><th>बॅच</th><th>एक्सपायरी</th><th>कृती</th></tr></thead>
+          <tbody id="productsTable"></tbody>
+        </table>
       </div>
-      <div>
-        <label>Bill Format</label>
-        <select id="billFormat">
-          <option value="retail">Retail (B2C)</option>
-          <option value="tax">Tax Invoice (B2B)</option>
+    </div>
+
+    <!-- PARTIES -->
+    <div id="page-parties" class="page">
+      <div class="page-title">👥 पार्ट्या (ग्राहक / सप्लायर / दलाल)
+        <div class="actions"><button class="btn btn-primary" onclick="openPartyModal()">➕ नवीन पार्टी</button></div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="partySearch" placeholder="🔍 नाव / फोन / गाव शोधा..." oninput="loadParties()">
+        <select id="partyTypeFilter" onchange="loadParties()">
+          <option value="">सर्व प्रकार</option>
+          <option value="customer">ग्राहक</option>
+          <option value="supplier">सप्लायर</option>
+          <option value="both">दोन्ही</option>
+          <option value="commission_agent">दलाल</option>
         </select>
       </div>
-      <div>
-        <label>Date</label>
-        <input type="date" id="invDate">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>नाव</th><th>फोन</th><th>गाव</th><th>GSTIN</th><th>प्रकार</th><th>उघडणी शिल्लक</th><th>चालू शिल्लक</th><th>कृती</th></tr></thead>
+          <tbody id="partiesTable"></tbody>
+        </table>
       </div>
-      <div>
-        <label>Party</label>
-        <select id="partySelect"><option value="">-- Select Party --</option></select>
+    </div>
+
+    <!-- LEDGER -->
+    <div id="page-ledger" class="page">
+      <div class="page-title">💰 पार्टी लेजर / उधारी
+        <div class="actions">
+          <button class="btn btn-primary" onclick="openPaymentModal('received')">💵 रक्कम प्राप्त</button>
+          <button class="btn btn-warning" onclick="openPaymentModal('given')">💸 रक्कम दिली</button>
+        </div>
       </div>
-      <div>
-        <label>Payment Mode</label>
-        <select id="paymentMode">
-          <option value="cash">Cash</option>
-          <option value="udhaari">Udhaari (Credit)</option>
-          <option value="online">Online</option>
+      <div class="search-bar">
+        <select id="ledgerParty" onchange="loadLedger()" style="flex:2"></select>
+        <input type="date" id="ledgerFrom" onchange="loadLedger()">
+        <input type="date" id="ledgerTo" onchange="loadLedger()">
+        <button class="btn btn-secondary" onclick="printPartyStatement()">🖨️ स्टेटमेंट प्रिंट</button>
+      </div>
+      <div id="ledgerSummary" class="stats-grid" style="margin-bottom:14px"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>तारीख</th><th>प्रकार</th><th>तपशील</th><th>जमा (+)</th><th>वजा (-)</th><th>शिल्लक</th></tr></thead>
+          <tbody id="ledgerTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STAFF -->
+    <div id="page-staff" class="page">
+      <div class="page-title">👨‍💼 कर्मचारी / उपस्थिती / पगार
+        <div class="actions">
+          <button class="btn btn-primary" onclick="openStaffModal()">➕ नवीन कर्मचारी</button>
+          <button class="btn btn-secondary" onclick="openAttendanceModal()">📅 उपस्थिती</button>
+          <button class="btn btn-secondary" onclick="openSalaryModal()">💰 पगार भरा</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>नाव</th><th>फोन</th><th>पद</th><th>पगार</th><th>स्थिती</th><th>कृती</th></tr></thead>
+          <tbody id="staffTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="page-reports" class="page">
+      <div class="page-title">📊 अहवाल</div>
+      <div class="stats-grid">
+        <div class="stat-card" onclick="showReport('gst')"><div class="stat-label">GST अहवाल</div><div class="stat-value" style="font-size:16px">📋 GSTR तयार</div></div>
+        <div class="stat-card blue" onclick="showReport('pnl')"><div class="stat-label">नफा-तोटा</div><div class="stat-value" style="font-size:16px">💹 P&L</div></div>
+        <div class="stat-card orange" onclick="showReport('outstanding')"><div class="stat-label">थकित उधारी</div><div class="stat-value" style="font-size:16px">💰 Outstanding</div></div>
+        <div class="stat-card red" onclick="showReport('daybook')"><div class="stat-label">डे बुक</div><div class="stat-value" style="font-size:16px">📒 Daily</div></div>
+        <div class="stat-card" onclick="showReport('salesreg')"><div class="stat-label">विक्री नोंदणी</div><div class="stat-value" style="font-size:16px">📈 Sales</div></div>
+        <div class="stat-card blue" onclick="showReport('purchasereg')"><div class="stat-label">खरेदी नोंदणी</div><div class="stat-value" style="font-size:16px">📉 Purchase</div></div>
+      </div>
+      <div id="reportContainer"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page">
+      <div class="page-title">⚙️ सेटिंग्ज</div>
+      <div class="card">
+        <div class="card-title">🏪 दुकानाची माहिती</div>
+        <div class="form-grid">
+          <div class="form-group"><label>दुकानाचे नाव</label><input type="text" id="setShopName"></div>
+          <div class="form-group"><label>पत्ता</label><input type="text" id="setShopAddress"></div>
+          <div class="form-group"><label>फोन</label><input type="text" id="setShopPhone"></div>
+          <div class="form-group"><label>GSTIN</label><input type="text" id="setShopGstin"></div>
+          <div class="form-group"><label>बँकेचे नाव</label><input type="text" id="setBankName"></div>
+          <div class="form-group"><label>खाते क्रमांक</label><input type="text" id="setBankAccount"></div>
+          <div class="form-group"><label>IFSC</label><input type="text" id="setBankIfsc"></div>
+          <div class="form-group"><label>UPI ID</label><input type="text" id="setUpiId"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:12px" onclick="saveSettings()">💾 जतन करा</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🔒 PIN बदला</div>
+        <div class="form-grid">
+          <div class="form-group"><label>जुना PIN</label><input type="password" id="oldPin" maxlength="6"></div>
+          <div class="form-group"><label>नवीन PIN</label><input type="password" id="newPin" maxlength="6"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:12px" onclick="changePin()">🔑 PIN बदला</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🏢 गोडाऊन</div>
+        <div id="godownsList"></div>
+        <button class="btn btn-secondary" onclick="openGodownModal()">➕ गोडाऊन जोडा</button>
+      </div>
+      <div class="card">
+        <div class="card-title">📥 CTRON Soft मधून आयात</div>
+        <p style="font-size:13px;color:var(--gray-500);margin-bottom:10px">CSV फाईल अपलोड करा (parties/products/opening)</p>
+        <input type="file" id="importFile" accept=".csv">
+        <select id="importType" style="padding:8px;margin:8px 0;border-radius:6px">
+          <option value="parties">Parties</option>
+          <option value="products">Products</option>
+          <option value="opening">Opening Balances</option>
         </select>
+        <button class="btn btn-primary" onclick="importCSV()">📤 आयात करा</button>
       </div>
     </div>
-    <div class="row hidden" id="returnRefRow">
-      <div>
-        <label>मूळ Invoice क्रमांक (Return साठी, ऐच्छिक)</label>
-        <select id="originalInvoiceSelect"><option value="">-- Select --</option></select>
+
+    <!-- BACKUP -->
+    <div id="page-backup" class="page">
+      <div class="page-title">💾 बॅकअप / निर्यात</div>
+      <div class="card">
+        <div class="card-title">📤 डेटा निर्यात</div>
+        <div class="form-grid">
+          <div class="form-group"><label>तक्ता</label>
+            <select id="exportTable">
+              <option value="all">सर्व</option>
+              <option value="invoices">Invoices</option>
+              <option value="parties">Parties</option>
+              <option value="products">Products</option>
+              <option value="ledger_entries">Ledger</option>
+            </select>
+          </div>
+          <div class="form-group"><label>स्वरूप</label>
+            <select id="exportFormat"><option value="csv">CSV</option><option value="json">JSON</option></select>
+          </div>
+          <div class="form-group"><label>तारीख पासून</label><input type="date" id="exportFrom"></div>
+          <div class="form-group"><label>तारीख पर्यंत</label><input type="date" id="exportTo"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:12px" onclick="exportData()">💾 निर्यात करा</button>
+      </div>
+      <div class="card">
+        <div class="card-title">📥 डेटा आयात (JSON बॅकअप)</div>
+        <input type="file" id="restoreFile" accept=".json">
+        <button class="btn btn-warning" style="margin-top:10px" onclick="restoreData()">📥 पुनर्संचयित करा</button>
       </div>
     </div>
-  </div>
-
-  <div class="card">
-    <h3>वस्तू (Items)</h3>
-    <div id="itemsContainer"></div>
-    <button class="secondary" onclick="addItemRow()">+ वस्तू जोडा</button>
-
-    <div class="row" style="margin-top:12px;">
-      <div><label>Bill Discount %</label><input type="number" id="billDiscount" value="0" oninput="updateTotals()"></div>
-      <div><label>Round Off</label><input type="number" id="roundOff" value="0" oninput="updateTotals()"></div>
-    </div>
-
-    <div class="totals">
-      <div>Subtotal: <b id="subtotalDisp">₹0</b></div>
-      <div>Discount: <b id="discDisp">₹0</b></div>
-      <div>GST: <b id="gstDisp">₹0</b></div>
-      <div>Total: <b id="totalDisp">₹0</b></div>
-    </div>
-
-    <div class="row" style="margin-top:12px;">
-      <div><label>Paid Amount</label><input type="number" id="paidAmount" value="0" oninput="updateTotals()"></div>
-      <div><label>Balance (Due)</label><input id="balanceDisp" readonly></div>
-    </div>
-
-    <div style="margin-top:14px;">
-      <button class="primary" onclick="saveInvoice()">✅ बिल सेव्ह करा</button>
-      <button class="secondary" onclick="resetBillingForm()">🔄 Reset</button>
-    </div>
-  </div>
+  </main>
 </div>
 
-<!-- ================= QUOTATION ================= -->
-<div id="tab-quotation" class="tab-section">
-  <div class="card">
-    <h3>नवीन Quotation</h3>
-    <div class="row">
-      <div><label>Quotation No.</label><input id="quoNo" readonly></div>
-      <div><label>Date</label><input type="date" id="quoDate"></div>
-      <div><label>Party</label><select id="quoPartySelect"><option value="">-- Select Party --</option></select></div>
-    </div>
-    <div id="quoItemsContainer"></div>
-    <button class="secondary" onclick="addQuoItemRow()">+ वस्तू जोडा</button>
-    <div class="totals">
-      <div>Subtotal: <b id="quoSubtotalDisp">₹0</b></div>
-      <div>GST: <b id="quoGstDisp">₹0</b></div>
-      <div>Total: <b id="quoTotalDisp">₹0</b></div>
-    </div>
-    <button class="primary" onclick="saveQuotation()">✅ Quotation सेव्ह करा</button>
-  </div>
-  <div class="card">
-    <h3>Quotation यादी</h3>
-    <table><thead><tr><th>No</th><th>Date</th><th>Party</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="quotationsTable"></tbody></table>
-  </div>
+<!-- MODAL CONTAINER -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalContent"></div>
 </div>
 
-<!-- ================= PRODUCTS/STOCK ================= -->
-<div id="tab-products" class="tab-section">
-  <div class="card">
-    <h3>नवीन वस्तू जोडा</h3>
-    <div class="row">
-      <div><label>नाव</label><input id="pName"></div>
-      <div><label>Category</label>
-        <select id="pCategory"><option value="fertilizer">Fertilizer</option><option value="seed">Seed</option><option value="pesticide">Pesticide</option><option value="other">Other</option></select>
-      </div>
-      <div><label>HSN Code</label><input id="pHsn"></div>
-      <div><label>Unit Type</label>
-        <select id="pUnitType"><option value="kg">Kg (Loose)</option><option value="bag">Bag</option><option value="gram">Gram</option></select>
-      </div>
-    </div>
-    <div class="row">
-      <div><label>Pack Size (kg per bag)</label><input type="number" id="pPackSize"></div>
-      <div><label>GST %</label><input type="number" id="pGst" value="5"></div>
-      <div><label>Purchase Price</label><input type="number" id="pPurchasePrice"></div>
-      <div><label>Sale Price</label><input type="number" id="pSalePrice"></div>
-    </div>
-    <div class="row">
-      <div><label>Opening Stock (kg)</label><input type="number" id="pOpeningStock" value="0"></div>
-      <div><label>Low Stock Alert (kg)</label><input type="number" id="pLowStock" value="0"></div>
-      <div><label>Reorder Level (kg)</label><input type="number" id="pReorder" value="0"></div>
-    </div>
-    <div class="row">
-      <div><label>Batch Number</label><input id="pBatch"></div>
-      <div><label>Expiry Date</label><input type="date" id="pExpiry"></div>
-      <div><label>Godown</label><select id="pGodown"><option value="">-- Select --</option></select></div>
-    </div>
-    <button class="primary" onclick="saveProduct()">➕ वस्तू सेव्ह करा</button>
-  </div>
+<!-- TOAST -->
+<div id="toastContainer"></div>
 
-  <div class="card">
-    <h3>नवीन Godown जोडा</h3>
-    <div class="row">
-      <div><label>नाव</label><input id="gName"></div>
-      <div><label>Location</label><input id="gLocation"></div>
-    </div>
-    <button class="secondary" onclick="saveGodown()">➕ Godown जोडा</button>
-  </div>
-
-  <div class="card">
-    <h3>स्टॉक यादी <input class="search-bar" style="width:200px;display:inline-block;margin-left:10px" placeholder="🔍 शोधा..." oninput="renderProductsTable(this.value)"></h3>
-    <table id="productsTable">
-      <thead><tr><th>नाव</th><th>Category</th><th>Unit</th><th>Sale ₹</th><th>Stock (kg)</th><th>Batch/Expiry</th><th>Status</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ================= PARTIES ================= -->
-<div id="tab-parties" class="tab-section">
-  <div class="card">
-    <h3>नवीन पार्टी जोडा</h3>
-    <div class="row">
-      <div><label>नाव</label><input id="ptName"></div>
-      <div><label>Phone</label><input id="ptPhone"></div>
-      <div><label>Village</label><input id="ptVillage"></div>
-      <div><label>GSTIN (optional)</label><input id="ptGstin"></div>
-    </div>
-    <div class="row">
-      <div><label>Type</label>
-        <select id="ptType"><option value="customer">Customer</option><option value="supplier">Supplier</option><option value="both">Both</option></select>
-      </div>
-      <div><label>Opening Balance (Udhaari)</label><input type="number" id="ptOpening" value="0"></div>
-      <div><label>Commission Agent (ऐच्छिक)</label><select id="ptAgent"><option value="">-- None --</option></select></div>
-    </div>
-    <button class="primary" onclick="saveParty()">➕ पार्टी सेव्ह करा</button>
-  </div>
-
-  <div class="card">
-    <h3>नवीन Commission Agent जोडा</h3>
-    <div class="row">
-      <div><label>नाव</label><input id="caName"></div>
-      <div><label>Phone</label><input id="caPhone"></div>
-      <div><label>Commission %</label><input type="number" id="caPercent" value="0"></div>
-    </div>
-    <button class="secondary" onclick="saveAgent()">➕ Agent जोडा</button>
-  </div>
-
-  <div class="card">
-    <h3>पार्टी यादी <input class="search-bar" style="width:200px;display:inline-block;margin-left:10px" placeholder="🔍 शोधा..." oninput="renderPartiesTable(this.value)"></h3>
-    <table>
-      <thead><tr><th>नाव</th><th>Phone</th><th>Village</th><th>Type</th><th>Opening Bal</th><th>WhatsApp</th></tr></thead>
-      <tbody id="partiesTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ================= INVOICES ================= -->
-<div id="tab-invoices" class="tab-section">
-  <div class="card">
-    <h3>बिल इतिहास <input class="search-bar" style="width:200px;display:inline-block;margin-left:10px" placeholder="🔍 Invoice No / Party..." oninput="renderInvoicesTable(this.value)"></h3>
-    <table>
-      <thead><tr><th>Invoice No</th><th>Type</th><th>Date</th><th>Party</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead>
-      <tbody id="invoicesTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ================= LEDGER ================= -->
-<div id="tab-ledger" class="tab-section">
-  <div class="card">
-    <h3>पार्टी निवडा</h3>
-    <select id="ledgerPartySelect" onchange="loadLedger()"><option value="">-- Select Party --</option></select>
-  </div>
-  <div class="card">
-    <h3>पेमेंट नोंदवा</h3>
-    <div class="row">
-      <div><label>रक्कम</label><input type="number" id="paymentAmount"></div>
-      <div><label>प्रकार</label><select id="paymentType"><option value="payment_received">जमा (Received)</option><option value="payment_given">खर्च (Given)</option></select></div>
-      <div><label>Notes</label><input id="paymentNotes"></div>
-    </div>
-    <button class="primary" onclick="savePayment()">✅ पेमेंट सेव्ह करा</button>
-  </div>
-  <div class="card">
-    <h3>उधारी नोंदी</h3>
-    <table>
-      <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Notes</th></tr></thead>
-      <tbody id="ledgerTable"></tbody>
-    </table>
-    <div class="totals"><div>एकूण उधारी शिल्लक: <b id="ledgerTotal">₹0</b></div></div>
-    <button class="secondary no-print" onclick="printStatement()">🖨️ Statement Print</button>
-  </div>
-</div>
-
-<!-- ================= REPORTS ================= -->
-<div id="tab-reports" class="tab-section">
-  <div class="card">
-    <h3>Stock Report</h3>
-    <table><thead><tr><th>वस्तू</th><th>Stock (kg)</th><th>Status</th></tr></thead><tbody id="reportStockTable"></tbody></table>
-  </div>
-  <div class="card">
-    <h3>Party-wise Outstanding (सर्वाधिक उधारी आधी)</h3>
-    <table><thead><tr><th>पार्टी</th><th>Village</th><th>Outstanding</th></tr></thead><tbody id="reportOutstandingTable"></tbody></table>
-  </div>
-  <div class="card">
-    <h3>Day Book (आजचं)</h3>
-    <table><thead><tr><th>वेळ</th><th>प्रकार</th><th>Detail</th><th>Amount</th></tr></thead><tbody id="reportDayBookTable"></tbody></table>
-  </div>
-  <div class="card">
-    <h3>Sales/Purchase Register</h3>
-    <div class="row">
-      <div><label>From</label><input type="date" id="regFrom"></div>
-      <div><label>To</label><input type="date" id="regTo"></div>
-      <div><label>&nbsp;</label><button class="secondary" onclick="loadRegister()">Filter करा</button></div>
-    </div>
-    <table><thead><tr><th>Invoice No</th><th>Type</th><th>Date</th><th>Party</th><th>Total</th></tr></thead><tbody id="reportRegisterTable"></tbody></table>
-  </div>
-</div>
-
-<!-- ================= BACKUP ================= -->
-<div id="tab-backup" class="tab-section">
-  <div class="card">
-    <h3>💾 Backup / Export</h3>
-    <p class="small">सर्व डेटा CSV फॉरमॅट मध्ये डाउनलोड करा (Excel मध्ये उघडता येईल)</p>
-    <button class="primary" onclick="exportCSV('parties')">Parties Export</button>
-    <button class="primary" onclick="exportCSV('products')">Products Export</button>
-    <button class="primary" onclick="exportCSV('invoices')">Invoices Export</button>
-    <button class="primary" onclick="exportCSV('ledger_entries')">Ledger Export</button>
-  </div>
-  <div class="card">
-    <h3>🔐 PIN बदला</h3>
-    <div class="row">
-      <div><label>नवीन PIN (4-6 अंकी)</label><input type="password" id="newPin" maxlength="6"></div>
-      <div><label>&nbsp;</label><button class="secondary" onclick="changePin()">PIN Update करा</button></div>
-    </div>
-  </div>
-</div>
-
-</main>
-
-</div>
-
-<!-- print area populated dynamically -->
-<div id="printArea" class="print-only"></div>
-
-<div class="toast" id="toast"></div>
+<!-- PRINT AREA -->
+<div id="printArea" class="print-area"></div>
 
 <script>
-// ============================================================
-// New Venktesh Agro Agency ERP - Full App Logic
-// ============================================================
-const SUPABASE_URL = "https://rsutnfwigyefwbvbpjwl.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzdXRuZndpZ3llZndidmJwandsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMjM3NTUsImV4cCI6MjA5ODc5OTc1NX0.NKkpy0JjzmRajrlrsAyAG7WsD-bsLSRvZTcJ5aYnR7Y";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// =====================================================
+// SUPABASE INIT
+// =====================================================
+const SUPABASE_URL = 'https://rsutnfwigyefwbvbpjwl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzdXRuZndpZ3llZndidmJwandsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMjM3NTUsImV4cCI6MjA5ODc5OTc1NX0.NKkpy0JjzmRajrlrsAyAG7WsD-bsLSRvZTcJ5aYnR7Y';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let products = [], parties = [], godowns = [], agents = [], invoices = [];
-let itemRowCount = 0, quoItemRowCount = 0;
+// =====================================================
+// STATE
+// =====================================================
+let STATE = {
+  currentFY: '2026-27',
+  settings: {},
+  parties: [],
+  products: [],
+  godowns: [],
+  invoices: [],
+  quotations: [],
+  staff: [],
+  commissionAgents: []
+};
 
-// ============================================================
-// PIN LOCK
-// ============================================================
-function checkPin(){
-  const entered = document.getElementById('pinInput').value.trim();
-  const savedPin = localStorage.getItem('nva_pin');
-  if(!savedPin){
-    if(entered.length < 4){ document.getElementById('lockMsg').textContent = 'किमान 4 अंकी PIN टाका'; return; }
-    localStorage.setItem('nva_pin', entered);
-    unlockApp();
-    return;
-  }
-  if(entered === savedPin){ unlockApp(); }
-  else { document.getElementById('lockMsg').textContent = '❌ चुकीचा PIN, पुन्हा प्रयत्न करा'; }
-}
+// =====================================================
+// UTILITIES
+// =====================================================
+const $ = id => document.getElementById(id);
+const fmt = n => '₹' + (Number(n)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDate = d => { if(!d) return ''; const dt=new Date(d); return dt.toLocaleDateString('en-IN'); };
+const today = () => new Date().toISOString().slice(0,10);
+const toast = (msg,type='success') => {
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.innerHTML = `<span>${type==='error'?'❌':type==='warning'?'⚠️':type==='info'?'ℹ️':'✅'}</span><span>${msg}</span>`;
+  $('toastContainer').appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+};
+const confirmAction = msg => confirm(msg);
+const numberToWords = (num) => {
+  if(!num || num===0) return 'शून्य';
+  const a=['','एक','दोन','तीन','चार','पाच','सहा','सात','आठ','नऊ','दहा','अकरा','बारा','तेरा','चौदा','पंधरा','सोळा','सातरा','अठरा','एकोणीस','वीस','एकवीस','बावीस','तेवीस','चोवीस','पंचवीस','सव्वीस','सत्तावीस','अठ्ठावीस','एकोणिस'];
+  const b=['','','वीस','तीस','चाळीस','पन्नास','साठी','सत्तर','ऐंशी','नव्वद'];
+  const s=['','शंभर','दोनशे','तिन्शे','चारशे','पाचशे','सहाशे','सातशे','आठशे','नऊशे'];
+  num = Math.round(num);
+  const cr=Math.floor(num/10000000),lc=Math.floor((num%10000000)/100000),th=Math.floor((num%100000)/1000),h=Math.floor((num%1000)/100),r=num%100;
+  let w='';
+  if(cr) w+=a[cr]+' कोटी ';
+  if(lc) w+=a[lc]+' लाख ';
+  if(th) w+=a[th]+' हजार ';
+  if(h) w+=s[h]+' ';
+  if(r){ if(r<20) w+=a[r]; else w+=b[Math.floor(r/10)]+(r%10?' '+a[r%10]:''); }
+  return w.trim()+' फक्त';
+};
+const getCurrentFY = () => {
+  const d=new Date(); const y=d.getFullYear(); const m=d.getMonth();
+  return m<3 ? `${y-1}-${String(y).slice(2)}` : `${y}-${String(y+1).slice(2)}`;
+};
+const getAllFYs = () => {
+  const fys = [getCurrentFY()];
+  const cy = parseInt(STATE.currentFY.split('-')[0]);
+  for(let i=1;i<10;i++) fys.push(`${cy-i}-${String(cy-i+1).slice(2)}`);
+  for(let i=1;i<5;i++) fys.push(`${cy+i}-${String(cy+i+1).slice(2)}`);
+  return fys;
+};
+
+// =====================================================
+// LOCK SCREEN
+// =====================================================
 function unlockApp(){
-  document.getElementById('lockScreen').classList.add('hidden');
-  document.getElementById('appRoot').classList.remove('hidden');
-  init();
+  const pin = $('pinInput').value;
+  const saved = localStorage.getItem('erp_pin') || '1234';
+  if(pin === saved){
+    $('lockScreen').style.display='none';
+    $('app').style.display='block';
+    initApp();
+  } else {
+    $('lockError').textContent = '❌ चुकीचा PIN! पुन्हा प्रयत्न करा.';
+    $('pinInput').value='';
+  }
+}
+function lockApp(){
+  localStorage.removeItem('erp_session');
+  location.reload();
+}
+$('pinInput').addEventListener('keypress',e=>{if(e.key==='Enter')unlockApp()});
+
+// Auto-unlock if session exists
+if(localStorage.getItem('erp_session')==='1'){
+  $('lockScreen').style.display='none';
+  $('app').style.display='block';
+  setTimeout(initApp,100);
+}
+
+// =====================================================
+// APP INIT
+// =====================================================
+async function initApp(){
+  localStorage.setItem('erp_session','1');
+  STATE.currentFY = localStorage.getItem('erp_fy') || getCurrentFY();
+  await loadSettings();
+  populateFYSelect();
+  await Promise.all([loadParties(),loadProducts(),loadGodowns(),loadInvoices(),loadQuotations(),loadStaff()]);
+  renderDashboard();
+  renderSettings();
+  renderGodowns();
+  populatePartyDropdowns();
+  populateCategoryFilter();
+}
+
+function populateFYSelect(){
+  const sel = $('fySelect'); sel.innerHTML='';
+  getAllFYs().forEach(fy=>{
+    const o=document.createElement('option'); o.value=fy; o.textContent='FY '+fy;
+    if(fy===STATE.currentFY) o.selected=true;
+    sel.appendChild(o);
+  });
+}
+async function changeFY(){
+  STATE.currentFY = $('fySelect').value;
+  localStorage.setItem('erp_fy',STATE.currentFY);
+  await Promise.all([loadInvoices(),loadQuotations()]);
+  renderDashboard();
+  toast('आर्थिक वर्ष बदलले: '+STATE.currentFY,'info');
+}
+
+function showPage(page,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  $('page-'+page).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(page==='dashboard') renderDashboard();
+  if(page==='ledger') { populatePartyDropdowns(); loadLedger(); }
+}
+
+// =====================================================
+// MODAL
+// =====================================================
+function openModal(html){
+  $('modalContent').innerHTML = html;
+  $('modalBg').classList.add('show');
+}
+function closeModal(){ $('modalBg').classList.remove('show'); }
+$('modalBg').addEventListener('click',e=>{if(e.target===$('modalBg'))closeModal()});
+
+// =====================================================
+// SETTINGS
+// =====================================================
+async function loadSettings(){
+  const {data,error} = await sb.from('settings').select('*');
+  if(error){ toast('Settings load error: '+error.message,'error'); return; }
+  STATE.settings = {};
+  data.forEach(r => STATE.settings[r.key] = r.value);
+}
+function renderSettings(){
+  $('setShopName').value = STATE.settings.shop_name||'';
+  $('setShopAddress').value = STATE.settings.shop_address||'';
+  $('setShopPhone').value = STATE.settings.shop_phone||'';
+  $('setShopGstin').value = STATE.settings.shop_gstin||'';
+  $('setBankName').value = STATE.settings.shop_bank_name||'';
+  $('setBankAccount').value = STATE.settings.shop_bank_account||'';
+  $('setBankIfsc').value = STATE.settings.shop_bank_ifsc||'';
+  $('setUpiId').value = STATE.settings.shop_upi_id||'';
+}
+async function saveSettings(){
+  const keys = ['shop_name','shop_address','shop_phone','shop_gstin','shop_bank_name','shop_bank_account','shop_bank_ifsc','shop_upi_id'];
+  const ids = ['setShopName','setShopAddress','setShopPhone','setShopGstin','setBankName','setBankAccount','setBankIfsc','setUpiId'];
+  for(let i=0;i<keys.length;i++){
+    const v = $(ids[i]).value;
+    const {error} = await sb.from('settings').update({value:v}).eq('key',keys[i]);
+    if(error){ toast('Save error: '+error.message,'error'); return; }
+    STATE.settings[keys[i]] = v;
+  }
+  toast('सेटिंग्ज जतन केली! ✅');
 }
 function changePin(){
-  const np = document.getElementById('newPin').value.trim();
-  if(np.length < 4){ showToast('किमान 4 अंकी PIN हवा'); return; }
-  localStorage.setItem('nva_pin', np);
-  showToast('✅ PIN बदलला');
-  document.getElementById('newPin').value='';
-}
-document.getElementById('pinInput')?.addEventListener('keypress', e=>{ if(e.key==='Enter') checkPin(); });
-
-// ============================================================
-// FINANCIAL YEAR HELPER
-// ============================================================
-function getFinancialYear(dateStr){
-  const d = dateStr ? new Date(dateStr) : new Date();
-  const y = d.getFullYear();
-  const m = d.getMonth()+1; // 1-12
-  if(m >= 4){ return `${y}-${String(y+1).slice(2)}`; }
-  return `${y-1}-${String(y).slice(2)}`;
+  const oldP = $('oldPin').value, newP = $('newPin').value;
+  const saved = localStorage.getItem('erp_pin') || '1234';
+  if(oldP !== saved){ toast('जुना PIN चुकीचा!','error'); return; }
+  if(!newP || newP.length<4){ toast('नवीन PIN किमान 4 अंकी असावा','error'); return; }
+  localStorage.setItem('erp_pin',newP);
+  $('oldPin').value=''; $('newPin').value='';
+  toast('PIN बदलला! 🔑');
 }
 
-// ============================================================
-// INIT
-// ============================================================
-async function init(){
-  document.getElementById('invDate').value = new Date().toISOString().split('T')[0];
-  document.getElementById('quoDate').value = new Date().toISOString().split('T')[0];
-  try{
-    const { error } = await sb.from('parties').select('id').limit(1);
-    if(error) throw error;
-    document.getElementById('connStatus').textContent = "✅ Connected to Supabase";
-  }catch(e){
-    document.getElementById('connStatus').textContent = "⚠️ Connection issue: " + e.message;
-  }
-  await loadGodowns();
-  await loadAgents();
-  await loadProducts();
-  await loadParties();
-  await loadInvoices();
-  await generateInvoiceNo();
-  addItemRow();
-  await generateQuoNo();
-  addQuoItemRow();
-  await loadDashboard();
-}
-
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2500);
-}
-
-function showTab(name, evt){
-  document.querySelectorAll('.tab-section').forEach(s=>s.classList.remove('active-section'));
-  document.getElementById('tab-'+name).classList.add('active-section');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  if(evt) evt.target.classList.add('active');
-  if(name==='dashboard') loadDashboard();
-  if(name==='reports') loadReports();
-}
-
-// ============================================================
+// =====================================================
 // GODOWNS
-// ============================================================
+// =====================================================
 async function loadGodowns(){
-  const { data } = await sb.from('godowns').select('*').order('name');
-  godowns = data || [];
-  const sel = document.getElementById('pGodown');
-  sel.innerHTML = '<option value="">-- Select --</option>' + godowns.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
+  const {data,error} = await sb.from('godowns').select('*').order('name');
+  if(error){ toast('Godowns load error','error'); return; }
+  STATE.godowns = data || [];
+}
+function renderGodowns(){
+  const c = $('godownsList');
+  if(!STATE.godowns.length){ c.innerHTML='<p style="color:var(--gray-500);font-size:13px">कोणतेही गोडाऊन नाहीत. मुख्य गोडाऊन आपोआप वापरला जाईल.</p>'; return; }
+  c.innerHTML = STATE.godowns.map(g=>`<div style="display:flex;justify-content:space-between;padding:8px;background:var(--gray-50);border-radius:6px;margin-bottom:6px"><span>🏢 ${g.name} ${g.address?'- '+g.address:''}</span><button class="btn btn-sm btn-danger" onclick="deleteGodown(${g.id})">✕</button></div>`).join('');
+}
+function openGodownModal(){
+  openModal(`<div class="modal-header"><h2>नवीन गोडाऊन</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label>नाव</label><input type="text" id="gdName"></div>
+    <div class="form-group" style="margin-top:10px"><label>पत्ता</label><input type="text" id="gdAddr"></div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveGodown()">💾 जतन करा</button>`);
 }
 async function saveGodown(){
-  const name = document.getElementById('gName').value.trim();
-  if(!name){ showToast('Godown नाव टाका'); return; }
-  const { error } = await sb.from('godowns').insert({ name, location: document.getElementById('gLocation').value });
-  if(error){ showToast('Error: '+error.message); return; }
-  showToast('✅ Godown जोडलं');
-  document.getElementById('gName').value=''; document.getElementById('gLocation').value='';
-  await loadGodowns();
+  const name=$('gdName').value.trim(), addr=$('gdAddr').value.trim();
+  if(!name){ toast('नाव आवश्यक','error'); return; }
+  const {error}=await sb.from('godowns').insert({name,address:addr});
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  await loadGodowns(); renderGodowns(); closeModal(); toast('गोडाऊन जोडला! ✅');
+}
+async function deleteGodown(id){
+  if(!confirmAction('हा गोडाऊन हटवायचा?')) return;
+  const {error}=await sb.from('godowns').delete().eq('id',id);
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  await loadGodowns(); renderGodowns(); toast('गोडाऊन हटवला!');
 }
 
-// ============================================================
-// COMMISSION AGENTS
-// ============================================================
-async function loadAgents(){
-  const { data } = await sb.from('commission_agents').select('*').order('name');
-  agents = data || [];
-  const sel = document.getElementById('ptAgent');
-  sel.innerHTML = '<option value="">-- None --</option>' + agents.map(a=>`<option value="${a.id}">${a.name} (${a.commission_percent}%)</option>`).join('');
-}
-async function saveAgent(){
-  const name = document.getElementById('caName').value.trim();
-  if(!name){ showToast('Agent नाव टाका'); return; }
-  const { error } = await sb.from('commission_agents').insert({
-    name, phone: document.getElementById('caPhone').value,
-    commission_percent: parseFloat(document.getElementById('caPercent').value)||0
-  });
-  if(error){ showToast('Error: '+error.message); return; }
-  showToast('✅ Agent जोडला');
-  document.getElementById('caName').value=''; document.getElementById('caPhone').value=''; document.getElementById('caPercent').value='0';
-  await loadAgents();
-}
-
-// ============================================================
-// PRODUCTS
-// ============================================================
-async function loadProducts(){
-  const { data, error } = await sb.from('products').select('*').order('name');
-  if(error){ showToast('Error loading products: '+error.message); return; }
-  products = data || [];
-  renderProductsTable();
-  renderProductDropdowns();
-}
-
-function renderProductsTable(filter){
-  const tbody = document.querySelector('#productsTable tbody');
-  const f = (filter||'').toLowerCase();
-  const list = products.filter(p=>!f || p.name.toLowerCase().includes(f));
-  tbody.innerHTML = list.map(p=>{
-    const low = p.low_stock_alert_kg && p.current_stock_kg <= p.low_stock_alert_kg;
-    const expSoon = p.expiry_date && (new Date(p.expiry_date) - new Date()) < 30*24*3600*1000;
-    let status = '<span class="tag paid">OK</span>';
-    if(low) status = '<span class="tag due">Low Stock</span>';
-    else if(expSoon) status = '<span class="tag warn">Expiry Soon</span>';
-    return `<tr>
-      <td>${p.name}</td><td>${p.category}</td><td>${p.unit_type}</td>
-      <td>₹${p.sale_price}</td><td>${p.current_stock_kg}</td>
-      <td>${p.batch_number||'-'} ${p.expiry_date? '/ '+p.expiry_date : ''}</td>
-      <td>${status}</td>
-    </tr>`;
-  }).join('');
-}
-
-async function saveProduct(){
-  const name = document.getElementById('pName').value.trim();
-  if(!name){ showToast('वस्तूचे नाव टाका'); return; }
-  const payload = {
-    name,
-    category: document.getElementById('pCategory').value,
-    hsn_code: document.getElementById('pHsn').value,
-    unit_type: document.getElementById('pUnitType').value,
-    pack_size_kg: parseFloat(document.getElementById('pPackSize').value)||null,
-    gst_percent: parseFloat(document.getElementById('pGst').value)||0,
-    purchase_price: parseFloat(document.getElementById('pPurchasePrice').value)||0,
-    sale_price: parseFloat(document.getElementById('pSalePrice').value)||0,
-    current_stock_kg: parseFloat(document.getElementById('pOpeningStock').value)||0,
-    low_stock_alert_kg: parseFloat(document.getElementById('pLowStock').value)||0,
-    reorder_level_kg: parseFloat(document.getElementById('pReorder').value)||0,
-    batch_number: document.getElementById('pBatch').value || null,
-    expiry_date: document.getElementById('pExpiry').value || null,
-    godown_id: document.getElementById('pGodown').value || null
-  };
-  const { error } = await sb.from('products').insert(payload);
-  if(error){ showToast('Error: '+error.message); return; }
-  showToast('✅ वस्तू सेव्ह झाली');
-  ['pName','pHsn','pPackSize','pPurchasePrice','pSalePrice','pOpeningStock','pLowStock','pReorder','pBatch','pExpiry'].forEach(id=>document.getElementById(id).value='');
-  await loadProducts();
-}
-
-// ============================================================
+// =====================================================
 // PARTIES
-// ============================================================
+// =====================================================
 async function loadParties(){
-  const { data, error } = await sb.from('parties').select('*').order('name');
-  if(error){ showToast('Error loading parties: '+error.message); return; }
-  parties = data || [];
-  renderPartiesTable();
-  renderPartyDropdowns();
+  const {data,error}=await sb.from('parties').select('*').order('name');
+  if(error){ toast('Parties load error','error'); return; }
+  STATE.parties = data || [];
+  if($('partiesTable')) renderParties();
 }
-
-function renderPartiesTable(filter){
-  const f = (filter||'').toLowerCase();
-  const list = parties.filter(p=>!f || p.name.toLowerCase().includes(f) || (p.village||'').toLowerCase().includes(f));
-  document.getElementById('partiesTable').innerHTML = list.map(p=>{
-    const waLink = p.phone ? `<a href="https://wa.me/91${p.phone.replace(/\D/g,'')}?text=${encodeURIComponent('नमस्कार '+p.name+', आपली उधारी थकीत आहे कृपया लवकर भरणा करा - New Venktesh Agro Agency')}" target="_blank">📱 Remind</a>` : '-';
-    return `<tr><td>${p.name}</td><td>${p.phone||''}</td><td>${p.village||''}</td><td>${p.party_type}</td><td>₹${p.opening_balance}</td><td>${waLink}</td></tr>`;
-  }).join('');
-}
-
-function renderPartyDropdowns(){
-  const opts = '<option value="">-- Select Party --</option>' + parties.map(p=>`<option value="${p.id}">${p.name}${p.village? ' ('+p.village+')':''}</option>`).join('');
-  document.getElementById('partySelect').innerHTML = opts;
-  document.getElementById('ledgerPartySelect').innerHTML = opts;
-  document.getElementById('quoPartySelect').innerHTML = opts;
-}
-
-async function saveParty(){
-  const name = document.getElementById('ptName').value.trim();
-  if(!name){ showToast('पार्टीचे नाव टाका'); return; }
-  const payload = {
-    name,
-    phone: document.getElementById('ptPhone').value,
-    village: document.getElementById('ptVillage').value,
-    gstin: document.getElementById('ptGstin').value,
-    party_type: document.getElementById('ptType').value,
-    opening_balance: parseFloat(document.getElementById('ptOpening').value)||0,
-    commission_agent_id: document.getElementById('ptAgent').value || null
-  };
-  const { error } = await sb.from('parties').insert(payload);
-  if(error){ showToast('Error: '+error.message); return; }
-  showToast('✅ पार्टी सेव्ह झाली');
-  ['ptName','ptPhone','ptVillage','ptGstin','ptOpening'].forEach(id=>document.getElementById(id).value='');
-  await loadParties();
-}
-
-// ============================================================
-// BILLING - ITEM ROWS
-// ============================================================
-function renderProductDropdowns(){
-  document.querySelectorAll('.item-product, .quo-item-product').forEach(sel=>{
-    const current = sel.value;
-    sel.innerHTML = '<option value="">-- वस्तू निवडा --</option>' + products.map(p=>`<option value="${p.id}">${p.name} (₹${p.sale_price}/kg)</option>`).join('');
-    sel.value = current;
+function renderParties(){
+  const search = ($('partySearch')?.value||'').toLowerCase();
+  const type = $('partyTypeFilter')?.value||'';
+  const filtered = STATE.parties.filter(p=>{
+    if(type && p.type!==type) return false;
+    if(search && !((p.name||'').toLowerCase().includes(search)||(p.phone||'').includes(search)||(p.village||'').toLowerCase().includes(search))) return false;
+    return true;
   });
+  const typeBadge = t => ({customer:'<span class="badge badge-green">ग्राहक</span>',supplier:'<span class="badge badge-blue">सप्लायर</span>',both:'<span class="badge badge-orange">दोन्ही</span>',commission_agent:'<span class="badge badge-gray">दलाल</span>'}[t]||'');
+  $('partiesTable').innerHTML = filtered.map(p=>`<tr>
+    <td><b>${p.name}</b></td><td>${p.phone||'-'}</td><td>${p.village||'-'}</td>
+    <td>${p.gstin||'-'}</td><td>${typeBadge(p.type)}</td>
+    <td>${fmt(p.opening_balance)}</td><td>${fmt(p.current_balance||0)}</td>
+    <td class="actions">
+      <button class="btn btn-sm btn-secondary" onclick="viewParty(${p.id})">👁️</button>
+      <button class="btn btn-sm btn-primary" onclick="openPartyModal(${p.id})">✏️</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteParty(${p.id})">🗑️</button>
+    </td></tr>`).join('') || '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gray-500)">कोणत्याही पार्ट्या नाहीत</td></tr>';
 }
-
-function onInvTypeChange(){
-  const type = document.getElementById('invType').value;
-  document.getElementById('returnRefRow').classList.toggle('hidden', !(type==='sales_return'||type==='purchase_return'));
-  if(type==='sales_return'||type==='purchase_return') populateOriginalInvoiceDropdown(type==='sales_return'?'sale':'purchase');
-  generateInvoiceNo();
+function openPartyModal(id){
+  const p = id ? STATE.parties.find(x=>x.id===id) : {};
+  openModal(`<div class="modal-header"><h2>${id?'पार्टी संपादित':'नवीन पार्टी'}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>नाव *</label><input type="text" id="pName" value="${p.name||''}"></div>
+      <div class="form-group"><label>फोन</label><input type="text" id="pPhone" value="${p.phone||''}"></div>
+      <div class="form-group"><label>गाव</label><input type="text" id="pVillage" value="${p.village||''}"></div>
+      <div class="form-group"><label>GSTIN</label><input type="text" id="pGstin" value="${p.gstin||''}"></div>
+      <div class="form-group"><label>प्रकार</label>
+        <select id="pType">
+          <option value="customer" ${p.type==='customer'?'selected':''}>ग्राहक</option>
+          <option value="supplier" ${p.type==='supplier'?'selected':''}>सप्लायर</option>
+          <option value="both" ${p.type==='both'?'selected':''}>दोन्ही</option>
+          <option value="commission_agent" ${p.type==='commission_agent'?'selected':''}>दलाल</option>
+        </select>
+      </div>
+      <div class="form-group"><label>उघडणी शिल्लक</label><input type="number" step="0.01" id="pOpening" value="${p.opening_balance||0}"></div>
+      <div class="form-group"><label>कमिशन % (दलाल)</label><input type="number" step="0.01" id="pComm" value="${p.commission_percent||0}"></div>
+    </div>
+    <div class="form-group" style="margin-top:10px"><label>टीप</label><textarea id="pNotes">${p.notes||''}</textarea></div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveParty(${id||'null'})">💾 जतन करा</button>`);
 }
-
-function populateOriginalInvoiceDropdown(baseType){
-  const sel = document.getElementById('originalInvoiceSelect');
-  const list = invoices.filter(i=>i.invoice_type===baseType);
-  sel.innerHTML = '<option value="">-- Select --</option>' + list.map(i=>`<option value="${i.id}">${i.invoice_no} - ₹${i.total_amount}</option>`).join('');
-}
-
-function addItemRow(){
-  itemRowCount++;
-  const id = itemRowCount;
-  const div = document.createElement('div');
-  div.className = 'item-row';
-  div.id = 'itemRow'+id;
-  div.innerHTML = `
-    <div><label>वस्तू</label><select class="item-product" onchange="onProductChange(${id})"></select></div>
-    <div><label>Qty (kg)</label><input type="number" class="item-qty" oninput="calcRow(${id})"></div>
-    <div><label>Rate (₹/kg)</label><input type="number" class="item-rate" oninput="calcRow(${id})"></div>
-    <div><label>Disc %</label><input type="number" class="item-disc" value="0" oninput="calcRow(${id})"></div>
-    <div><label>GST %</label><input type="number" class="item-gst" oninput="calcRow(${id})"></div>
-    <div><label>Amount</label><input type="text" class="item-amount" readonly></div>
-    <button class="remove-btn" onclick="removeItemRow(${id})">✕</button>
-  `;
-  document.getElementById('itemsContainer').appendChild(div);
-  renderProductDropdowns();
-}
-
-function removeItemRow(id){
-  const el = document.getElementById('itemRow'+id);
-  if(el) el.remove();
-  updateTotals();
-}
-
-function onProductChange(id){
-  const row = document.getElementById('itemRow'+id);
-  const prodId = row.querySelector('.item-product').value;
-  const prod = products.find(p=>p.id===prodId);
-  const invType = document.getElementById('invType').value;
-  if(prod){
-    row.querySelector('.item-rate').value = (invType==='purchase'||invType==='purchase_return') ? prod.purchase_price : prod.sale_price;
-    row.querySelector('.item-gst').value = prod.gst_percent;
-  }
-  calcRow(id);
-}
-
-function calcRow(id){
-  const row = document.getElementById('itemRow'+id);
-  const qty = parseFloat(row.querySelector('.item-qty').value)||0;
-  const rate = parseFloat(row.querySelector('.item-rate').value)||0;
-  const disc = parseFloat(row.querySelector('.item-disc').value)||0;
-  const gst = parseFloat(row.querySelector('.item-gst').value)||0;
-  let base = qty*rate;
-  base = base - (base*disc/100);
-  const amount = base + (base*gst/100);
-  row.querySelector('.item-amount').value = '₹'+amount.toFixed(2);
-  updateTotals();
-}
-
-function updateTotals(){
-  let subtotal=0, gstTotal=0;
-  document.querySelectorAll('.item-row').forEach(row=>{
-    const qty = parseFloat(row.querySelector('.item-qty').value)||0;
-    const rate = parseFloat(row.querySelector('.item-rate').value)||0;
-    const disc = parseFloat(row.querySelector('.item-disc').value)||0;
-    const gst = parseFloat(row.querySelector('.item-gst').value)||0;
-    let base = qty*rate;
-    base = base - (base*disc/100);
-    subtotal += base;
-    gstTotal += base*gst/100;
-  });
-  const billDisc = parseFloat(document.getElementById('billDiscount').value)||0;
-  const discAmt = subtotal*billDisc/100;
-  const roundOff = parseFloat(document.getElementById('roundOff').value)||0;
-  const total = subtotal - discAmt + gstTotal + roundOff;
-  const paid = parseFloat(document.getElementById('paidAmount').value)||0;
-  const balance = total-paid;
-  document.getElementById('subtotalDisp').textContent = '₹'+subtotal.toFixed(2);
-  document.getElementById('discDisp').textContent = '₹'+discAmt.toFixed(2);
-  document.getElementById('gstDisp').textContent = '₹'+gstTotal.toFixed(2);
-  document.getElementById('totalDisp').textContent = '₹'+total.toFixed(2);
-  document.getElementById('balanceDisp').value = '₹'+balance.toFixed(2);
-}
-
-async function generateInvoiceNo(){
-  const type = document.getElementById('invType').value;
-  const fy = getFinancialYear(document.getElementById('invDate').value);
-  const { count } = await sb.from('invoices').select('*', {count:'exact', head:true}).eq('invoice_type', type).eq('financial_year', fy);
-  const prefix = { sale:'SL', purchase:'PU', sales_return:'SR', purchase_return:'PR' }[type] || 'NVA';
-  document.getElementById('invNo').value = `${prefix}/${fy}/` + String((count||0)+1).padStart(4,'0');
-}
-
-function resetBillingForm(){
-  document.getElementById('itemsContainer').innerHTML='';
-  document.getElementById('partySelect').value='';
-  document.getElementById('paidAmount').value=0;
-  document.getElementById('billDiscount').value=0;
-  document.getElementById('roundOff').value=0;
-  generateInvoiceNo();
-  addItemRow();
-  updateTotals();
-}
-
-// ============================================================
-// SAVE INVOICE (handles sale, purchase, sales_return, purchase_return)
-// ============================================================
-async function saveInvoice(){
-  const rows = document.querySelectorAll('.item-row');
-  if(rows.length===0){ showToast('किमान एक वस्तू टाका'); return; }
-  const invType = document.getElementById('invType').value;
-
-  let subtotal=0, gstTotal=0;
-  const items = [];
-  for(const row of rows){
-    const prodId = row.querySelector('.item-product').value;
-    const qty = parseFloat(row.querySelector('.item-qty').value)||0;
-    const rate = parseFloat(row.querySelector('.item-rate').value)||0;
-    const disc = parseFloat(row.querySelector('.item-disc').value)||0;
-    const gst = parseFloat(row.querySelector('.item-gst').value)||0;
-    if(!prodId || qty<=0){ continue; }
-    let base = qty*rate;
-    base = base - (base*disc/100);
-    const amount = base + (base*gst/100);
-    subtotal += base; gstTotal += base*gst/100;
-    items.push({ product_id: prodId, qty_kg: qty, rate, discount_percent: disc, gst_percent: gst, amount });
-  }
-  if(items.length===0){ showToast('वैध वस्तू निवडा आणि प्रमाण टाका'); return; }
-
-  const billDisc = parseFloat(document.getElementById('billDiscount').value)||0;
-  const discAmt = subtotal*billDisc/100;
-  const roundOff = parseFloat(document.getElementById('roundOff').value)||0;
-  const total = subtotal - discAmt + gstTotal + roundOff;
-  const paid = parseFloat(document.getElementById('paidAmount').value)||0;
-  const balance = total-paid;
-  const partyId = document.getElementById('partySelect').value || null;
-  const originalInvId = document.getElementById('originalInvoiceSelect')?.value || null;
-  const fy = getFinancialYear(document.getElementById('invDate').value);
-
-  const invoicePayload = {
-    invoice_no: document.getElementById('invNo').value,
-    invoice_type: invType,
-    bill_format: document.getElementById('billFormat').value,
-    party_id: partyId,
-    invoice_date: document.getElementById('invDate').value,
-    financial_year: fy,
-    subtotal, discount_amount: discAmt, gst_amount: gstTotal, round_off: roundOff, total_amount: total,
-    paid_amount: paid, balance_amount: balance,
-    payment_mode: document.getElementById('paymentMode').value,
-    original_invoice_id: originalInvId || null
+async function saveParty(id){
+  const obj = {
+    name:$('pName').value.trim(), phone:$('pPhone').value.trim(),
+    village:$('pVillage').value.trim(), gstin:$('pGstin').value.trim().toUpperCase(),
+    type:$('pType').value, opening_balance:parseFloat($('pOpening').value)||0,
+    commission_percent:parseFloat($('pComm').value)||0, notes:$('pNotes').value.trim()
   };
-
-  const { data: invData, error: invErr } = await sb.from('invoices').insert(invoicePayload).select().single();
-  if(invErr){ showToast('Error saving invoice: '+invErr.message); return; }
-
-  const itemsPayload = items.map(it=>({ ...it, invoice_id: invData.id }));
-  const { error: itemsErr } = await sb.from('invoice_items').insert(itemsPayload);
-  if(itemsErr){ showToast('Error saving items: '+itemsErr.message); return; }
-
-  // Stock direction based on invoice type
-  // sale: stock -qty | purchase: stock +qty | sales_return: stock +qty | purchase_return: stock -qty
-  const stockSign = (invType==='sale' || invType==='purchase_return') ? -1 : 1;
-  const movementType = { sale:'sale_out', purchase:'purchase_in', sales_return:'sales_return_in', purchase_return:'purchase_return_out' }[invType];
-
-  for(const it of items){
-    const prod = products.find(p=>p.id===it.product_id);
-    if(prod){
-      const newStock = (prod.current_stock_kg||0) + (stockSign * it.qty_kg);
-      await sb.from('products').update({ current_stock_kg: newStock }).eq('id', prod.id);
-      await sb.from('stock_movements').insert({
-        product_id: prod.id, movement_type: movementType, qty_kg: stockSign*it.qty_kg, reference_invoice_id: invData.id
-      });
-    }
-  }
-
-  // Ledger entry
-  // sale (udhaari balance>0): +due | purchase: we owe supplier -> could track separately but keep simple: purchase due as +due for supplier type
-  // sales_return: -due (reduces customer due) | purchase_return: -due (reduces our payable)
-  if(partyId){
-    let ledgerAmount = 0;
-    let entryType = 'invoice';
-    if(invType==='sale' && balance>0){ ledgerAmount = balance; entryType='invoice'; }
-    else if(invType==='purchase' && balance>0){ ledgerAmount = balance; entryType='invoice'; }
-    else if(invType==='sales_return'){ ledgerAmount = -total; entryType='return'; }
-    else if(invType==='purchase_return'){ ledgerAmount = -total; entryType='return'; }
-    if(ledgerAmount !== 0){
+  if(!obj.name){ toast('नाव आवश्यक','error'); return; }
+  let err;
+  if(id){ const r=await sb.from('parties').update(obj).eq('id',id); err=r.error; }
+  else { 
+    const r=await sb.from('parties').insert(obj); err=r.error;
+    if(!err && obj.opening_balance){
+      // Create opening ledger entry
       await sb.from('ledger_entries').insert({
-        party_id: partyId, entry_type: entryType, reference_invoice_id: invData.id,
-        amount: ledgerAmount, notes: 'Invoice '+invData.invoice_no
+        party_id:(await sb.from('parties').select('id').order('id',{ascending:false}).limit(1)).data[0].id,
+        entry_date:today(), type:'opening', amount:obj.opening_balance,
+        notes:'Opening Balance'
       });
     }
   }
-
-  showToast('✅ बिल यशस्वीरित्या सेव्ह झाले!');
-  printInvoice(invData.id, true);
-  resetBillingForm();
-  await loadProducts();
-  await loadInvoices();
+  if(err){ toast('Error: '+err.message,'error'); return; }
+  await loadParties(); renderParties(); populatePartyDropdowns(); closeModal();
+  toast(id?'पार्टी अपडेट! ✅':'पार्टी जोडली! ✅');
 }
-
-// ============================================================
-// QUOTATIONS
-// ============================================================
-async function generateQuoNo(){
-  const { count } = await sb.from('quotations').select('*', {count:'exact', head:true});
-  document.getElementById('quoNo').value = 'QT-' + String((count||0)+1).padStart(4,'0');
+async function deleteParty(id){
+  if(!confirmAction('ही पार्टी हटवायची? संबंधित सर्व डेटा हटवला जाईल.')) return;
+  const {error}=await sb.from('parties').delete().eq('id',id);
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  await loadParties(); renderParties(); populatePartyDropdowns(); toast('पार्टी हटवली!');
 }
-
-function addQuoItemRow(){
-  quoItemRowCount++;
-  const id = quoItemRowCount;
-  const div = document.createElement('div');
-  div.className = 'item-row';
-  div.id = 'quoItemRow'+id;
-  div.innerHTML = `
-    <div><label>वस्तू</label><select class="quo-item-product" onchange="onQuoProductChange(${id})"></select></div>
-    <div><label>Qty (kg)</label><input type="number" class="quo-item-qty" oninput="calcQuoRow(${id})"></div>
-    <div><label>Rate</label><input type="number" class="quo-item-rate" oninput="calcQuoRow(${id})"></div>
-    <div><label>GST %</label><input type="number" class="quo-item-gst" oninput="calcQuoRow(${id})"></div>
-    <div><label>Amount</label><input type="text" class="quo-item-amount" readonly></div>
-    <button class="remove-btn" onclick="document.getElementById('quoItemRow${id}').remove(); updateQuoTotals();">✕</button>
-  `;
-  document.getElementById('quoItemsContainer').appendChild(div);
-  renderProductDropdowns();
+async function viewParty(id){
+  const p = STATE.parties.find(x=>x.id===id);
+  const {data:entries}=await sb.from('ledger_entries').select('*').eq('party_id',id).order('entry_date',{ascending:false});
+  const {data:invs}=await sb.from('invoices').select('*').eq('party_id',id).order('invoice_date',{ascending:false}).limit(20);
+  let bal = Number(p.opening_balance||0);
+  (entries||[]).forEach(e=>bal+=Number(e.amount));
+  openModal(`<div class="modal-header"><h2>${p.name} - तपशील</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">फोन</div><div class="stat-value" style="font-size:16px">${p.phone||'-'}</div></div>
+      <div class="stat-card"><div class="stat-label">गाव</div><div class="stat-value" style="font-size:16px">${p.village||'-'}</div></div>
+      <div class="stat-card ${bal>0?'red':''}"><div class="stat-label">चालू शिल्लक</div><div class="stat-value">${fmt(bal)}</div></div>
+    </div>
+    <h3 style="margin:14px 0 8px;color:var(--green-800)">अलीकडील व्यवहार</h3>
+    <div class="table-wrap"><table><thead><tr><th>तारीख</th><th>प्रकार</th><th>रक्कम</th></tr></thead><tbody>
+    ${(entries||[]).slice(0,15).map(e=>`<tr><td>${fmtDate(e.entry_date)}</td><td>${e.type}</td><td>${fmt(e.amount)}</td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center;padding:10px">कोणतेही व्यवहार नाहीत</td></tr>'}
+    </tbody></table></div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="closeModal();showPage('ledger',null);$('ledgerParty').value=${id};loadLedger()">💰 लेजर पहा</button>
+    <button class="btn btn-secondary" style="margin-top:14px;margin-left:6px" onclick="sendWhatsAppReminder(${id})">📱 WhatsApp रिमाइंडर</button>`);
 }
-function onQuoProductChange(id){
-  const row = document.getElementById('quoItemRow'+id);
-  const prod = products.find(p=>p.id===row.querySelector('.quo-item-product').value);
-  if(prod){ row.querySelector('.quo-item-rate').value = prod.sale_price; row.querySelector('.quo-item-gst').value = prod.gst_percent; }
-  calcQuoRow(id);
-}
-function calcQuoRow(id){
-  const row = document.getElementById('quoItemRow'+id);
-  const qty = parseFloat(row.querySelector('.quo-item-qty').value)||0;
-  const rate = parseFloat(row.querySelector('.quo-item-rate').value)||0;
-  const gst = parseFloat(row.querySelector('.quo-item-gst').value)||0;
-  const base = qty*rate;
-  const amount = base + base*gst/100;
-  row.querySelector('.quo-item-amount').value = '₹'+amount.toFixed(2);
-  updateQuoTotals();
-}
-function updateQuoTotals(){
-  let subtotal=0, gst=0;
-  document.querySelectorAll('#quoItemsContainer .item-row').forEach(row=>{
-    const qty = parseFloat(row.querySelector('.quo-item-qty').value)||0;
-    const rate = parseFloat(row.querySelector('.quo-item-rate').value)||0;
-    const g = parseFloat(row.querySelector('.quo-item-gst').value)||0;
-    const base = qty*rate;
-    subtotal += base; gst += base*g/100;
+function populatePartyDropdowns(){
+  const selects = ['ledgerParty'];
+  selects.forEach(sid=>{
+    const sel=$(sid); if(!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">-- पार्टी निवडा --</option>' + STATE.parties.map(p=>`<option value="${p.id}">${p.name}${p.village?' ('+p.village+')':''}</option>`).join('');
+    sel.value = cur;
   });
-  document.getElementById('quoSubtotalDisp').textContent = '₹'+subtotal.toFixed(2);
-  document.getElementById('quoGstDisp').textContent = '₹'+gst.toFixed(2);
-  document.getElementById('quoTotalDisp').textContent = '₹'+(subtotal+gst).toFixed(2);
 }
 
-async function saveQuotation(){
-  const rows = document.querySelectorAll('#quoItemsContainer .item-row');
-  let subtotal=0, gstTotal=0; const items=[];
-  for(const row of rows){
-    const prodId = row.querySelector('.quo-item-product').value;
-    const qty = parseFloat(row.querySelector('.quo-item-qty').value)||0;
-    const rate = parseFloat(row.querySelector('.quo-item-rate').value)||0;
-    const gst = parseFloat(row.querySelector('.quo-item-gst').value)||0;
-    if(!prodId||qty<=0) continue;
-    const base=qty*rate; const amount=base+base*gst/100;
-    subtotal+=base; gstTotal+=base*gst/100;
-    items.push({ product_id: prodId, qty_kg: qty, rate, gst_percent: gst, amount });
-  }
-  if(items.length===0){ showToast('वैध वस्तू निवडा'); return; }
-  const payload = {
-    quotation_no: document.getElementById('quoNo').value,
-    party_id: document.getElementById('quoPartySelect').value || null,
-    quotation_date: document.getElementById('quoDate').value,
-    subtotal, gst_amount: gstTotal, total_amount: subtotal+gstTotal
+// =====================================================
+// PRODUCTS
+// =====================================================
+async function loadProducts(){
+  const {data,error}=await sb.from('products').select('*,stock(qty),godowns(name)').order('name');
+  if(error){ toast('Products load error','error'); return; }
+  // Aggregate stock per product
+  STATE.products = (data||[]).map(p=>{
+    const totalStock = (p.stock||[]).reduce((s,x)=>s+Number(x.qty||0),0);
+    return {...p, stock_qty: totalStock};
+  });
+  if($('productsTable')) renderProducts();
+}
+function renderProducts(){
+  const search = ($('prodSearch')?.value||'').toLowerCase();
+  const cat = $('prodCategoryFilter')?.value||'';
+  const stockF = $('prodStockFilter')?.value||'';
+  const filtered = STATE.products.filter(p=>{
+    if(cat && p.category!==cat) return false;
+    if(search && !((p.name||'').toLowerCase().includes(search)||(p.hsn_code||'').toLowerCase().includes(search)||(p.batch_no||'').toLowerCase().includes(search))) return false;
+    if(stockF==='low' && p.stock_qty>p.reorder_level) return false;
+    if(stockF==='out' && p.stock_qty>0) return false;
+    if(stockF==='expiry'){
+      if(!p.expiry_date) return false;
+      const days = (new Date(p.expiry_date)-new Date())/(1000*60*60*24);
+      if(days>90) return false;
+    }
+    return true;
+  });
+  $('productsTable').innerHTML = filtered.map(p=>{
+    const low = p.stock_qty<=0?'<span class="badge badge-red">शून्य</span>':p.stock_qty<=p.reorder_level?'<span class="badge badge-orange">कमी</span>':'<span class="badge badge-green">OK</span>';
+    const exp = p.expiry_date ? (new Date(p.expiry_date)<new Date()?'<span class="badge badge-red">Exp</span>':fmtDate(p.expiry_date)) : '-';
+    return `<tr>
+      <td><b>${p.name}</b></td><td>${p.category||'-'}</td><td>${p.hsn_code||'-'}</td>
+      <td>${p.unit||'-'}${p.pack_size>1?' ('+p.pack_size+')':''}</td>
+      <td>${fmt(p.purchase_price)}</td><td>${fmt(p.sale_price)}</td><td>${p.gst_percent}%</td>
+      <td>${p.stock_qty} ${p.unit||''} ${low}</td>
+      <td>${p.batch_no||'-'}</td><td>${exp}</td>
+      <td class="actions">
+        <button class="btn btn-sm btn-primary" onclick="openProductModal(${p.id})">✏️</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteProduct(${p.id})">🗑️</button>
+      </td></tr>`;
+  }).join('') || '<tr><td colspan="11" style="text-align:center;padding:20px;color:var(--gray-500)">कोणतीही उत्पादने नाहीत</td></tr>';
+}
+function populateCategoryFilter(){
+  const cats = [...new Set(STATE.products.map(p=>p.category).filter(Boolean))];
+  $('prodCategoryFilter').innerHTML = '<option value="">सर्व श्रेणी</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+function openProductModal(id){
+  const p = id ? STATE.products.find(x=>x.id===id) : {};
+  openModal(`<div class="modal-header"><h2>${id?'उत्पादन संपादित':'नवीन उत्पादन'}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>नाव *</label><input type="text" id="prName" value="${p.name||''}"></div>
+      <div class="form-group"><label>श्रेणी</label><input type="text" id="prCat" value="${p.category||''}" list="catList">
+        <datalist id="catList">${[...new Set(STATE.products.map(x=>x.category).filter(Boolean))].map(c=>`<option value="${c}">`).join('')}</datalist>
+      </div>
+      <div class="form-group"><label>HSN Code</label><input type="text" id="prHsn" value="${p.hsn_code||''}"></div>
+      <div class="form-group"><label>युनिट</label>
+        <select id="prUnit">
+          ${['kg','g','bag','piece','quintal','liter'].map(u=>`<option value="${u}" ${p.unit===u?'selected':''}>${u}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>Pack Size</label><input type="number" step="0.01" id="prPack" value="${p.pack_size||1}"></div>
+      <div class="form-group"><label>GST %</label><input type="number" step="0.01" id="prGst" value="${p.gst_percent||0}"></div>
+      <div class="form-group"><label>खरेदी दर</label><input type="number" step="0.01" id="prPP" value="${p.purchase_price||0}"></div>
+      <div class="form-group"><label>विक्री दर</label><input type="number" step="0.01" id="prSP" value="${p.sale_price||0}"></div>
+      <div class="form-group"><label>Reorder Level</label><input type="number" step="0.01" id="prReorder" value="${p.reorder_level||10}"></div>
+      <div class="form-group"><label>बॅच क्र.</label><input type="text" id="prBatch" value="${p.batch_no||''}"></div>
+      <div class="form-group"><label>एक्सपायरी</label><input type="date" id="prExp" value="${p.expiry_date||''}"></div>
+      <div class="form-group"><label>गोडाऊन</label>
+        <select id="prGodown"><option value="">मुख्य</option>${STATE.godowns.map(g=>`<option value="${g.id}" ${p.godown_id==g.id?'selected':''}>${g.name}</option>`).join('')}</select>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveProduct(${id||'null'})">💾 जतन करा</button>`);
+}
+async function saveProduct(id){
+  const obj = {
+    name:$('prName').value.trim(), category:$('prCat').value.trim(),
+    hsn_code:$('prHsn').value.trim(), unit:$('prUnit').value,
+    pack_size:parseFloat($('prPack').value)||1, gst_percent:parseFloat($('prGst').value)||0,
+    purchase_price:parseFloat($('prPP').value)||0, sale_price:parseFloat($('prSP').value)||0,
+    reorder_level:parseFloat($('prReorder').value)||0, batch_no:$('prBatch').value.trim(),
+    expiry_date:$('prExp').value||null, godown_id:$('prGodown').value?parseInt($('prGodown').value):null
   };
-  const { data, error } = await sb.from('quotations').insert(payload).select().single();
-  if(error){ showToast('Error: '+error.message); return; }
-  await sb.from('quotation_items').insert(items.map(it=>({...it, quotation_id: data.id})));
-  showToast('✅ Quotation सेव्ह झालं');
-  document.getElementById('quoItemsContainer').innerHTML='';
-  addQuoItemRow();
-  await generateQuoNo();
-  await loadQuotations();
+  if(!obj.name){ toast('नाव आवश्यक','error'); return; }
+  let err;
+  if(id){ const r=await sb.from('products').update(obj).eq('id',id); err=r.error; }
+  else { const r=await sb.from('products').insert(obj); err=r.error; }
+  if(err){ toast('Error: '+err.message,'error'); return; }
+  await loadProducts(); renderProducts(); populateCategoryFilter(); closeModal();
+  toast(id?'उत्पादन अपडेट! ✅':'उत्पादन जोडले! ✅');
 }
-
-async function loadQuotations(){
-  const { data } = await sb.from('quotations').select('*, parties(name)').order('created_at', {ascending:false});
-  document.getElementById('quotationsTable').innerHTML = (data||[]).map(q=>`
-    <tr><td>${q.quotation_no}</td><td>${q.quotation_date}</td><td>${q.parties?.name||'-'}</td>
-    <td>₹${q.total_amount}</td><td>${q.status}</td>
-    <td>${q.status==='open' ? `<button class="secondary" onclick="convertQuotation('${q.id}')">→ Invoice</button>` : '✅ Converted'}</td></tr>
-  `).join('');
+async function deleteProduct(id){
+  if(!confirmAction('हे उत्पादन हटवायचे?')) return;
+  const {error}=await sb.from('products').delete().eq('id',id);
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  await loadProducts(); renderProducts(); populateCategoryFilter(); toast('उत्पादन हटवले!');
 }
-
-async function convertQuotation(quoId){
-  const { data: quo } = await sb.from('quotations').select('*').eq('id', quoId).single();
-  const { data: qItems } = await sb.from('quotation_items').select('*').eq('quotation_id', quoId);
-  showTab('billing');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('invType').value = 'sale';
-  document.getElementById('partySelect').value = quo.party_id || '';
-  document.getElementById('itemsContainer').innerHTML = '';
-  qItems.forEach(it=>{
-    addItemRow();
-    const rowId = itemRowCount;
-    const row = document.getElementById('itemRow'+rowId);
-    row.querySelector('.item-product').value = it.product_id;
-    row.querySelector('.item-qty').value = it.qty_kg;
-    row.querySelector('.item-rate').value = it.rate;
-    row.querySelector('.item-gst').value = it.gst_percent;
-    calcRow(rowId);
+function openStockAdjustModal(){
+  openModal(`<div class="modal-header"><h2>स्टॉक समायोजन</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label>उत्पादन</label>
+      <select id="saProd">${STATE.products.map(p=>`<option value="${p.id}">${p.name} (सध्या: ${p.stock_qty})</option>`).join('')}</select>
+    </div>
+    <div class="form-grid" style="margin-top:10px">
+      <div class="form-group"><label>प्रकार</label>
+        <select id="saType"><option value="in">जमा (+)</option><option value="out">वजा (-)</option></select>
+      </div>
+      <div class="form-group"><label>प्रमाण</label><input type="number" step="0.01" id="saQty" value="0"></div>
+    </div>
+    <div class="form-group" style="margin-top:10px"><label>कारण</label><textarea id="saNotes"></textarea></div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveStockAdjust()">💾 समायोजन जतन करा</button>`);
+}
+async function saveStockAdjust(){
+  const pid = parseInt($('saProd').value);
+  const type = $('saType').value;
+  const qty = parseFloat($('saQty').value);
+  const notes = $('saNotes').value;
+  if(!qty || qty<=0){ toast('प्रमाण आवश्यक','error'); return; }
+  const prod = STATE.products.find(p=>p.id===pid);
+  const godown_id = prod.godown_id;
+  const signedQty = type==='in'?qty:-qty;
+  // Update stock
+  const {data:existing} = await sb.from('stock').select('*').eq('product_id',pid).eq('godown_id',godown_id||0).limit(1);
+  if(existing && existing.length){
+    await sb.from('stock').update({qty:Number(existing[0].qty)+signedQty}).eq('id',existing[0].id);
+  } else {
+    await sb.from('stock').insert({product_id:pid,godown_id:godown_id||0,batch_no:prod.batch_no,qty:signedQty});
+  }
+  // Record movement
+  await sb.from('stock_movements').insert({
+    product_id:pid, godown_id:godown_id||0, batch_no:prod.batch_no,
+    type:'adjustment', qty:signedQty, reference_type:'adjustment', notes
   });
-  await sb.from('quotations').update({ status:'converted' }).eq('id', quoId);
-  showToast('Quotation माहिती Billing मध्ये भरली, तपासून सेव्ह करा');
+  await loadProducts(); closeModal(); toast('स्टॉक समायोजित! ✅');
 }
-
-// ============================================================
-// INVOICE HISTORY
-// ============================================================
-async function loadInvoices(){
-  const { data, error } = await sb.from('invoices').select('*, parties(name)').order('created_at', {ascending:false}).limit(200);
-  if(error){ showToast('Error: '+error.message); return; }
-  invoices = data || [];
-  renderInvoicesTable();
-}
-
-function renderInvoicesTable(filter){
-  const f = (filter||'').toLowerCase();
-  const list = invoices.filter(inv => !f || inv.invoice_no.toLowerCase().includes(f) || (inv.parties?.name||'').toLowerCase().includes(f));
-  document.getElementById('invoicesTable').innerHTML = list.map(inv=>`
-    <tr>
-      <td>${inv.invoice_no}</td><td>${inv.invoice_type}</td><td>${inv.invoice_date}</td>
-      <td>${inv.parties?.name || '-'}</td>
-      <td>₹${inv.total_amount}</td><td>₹${inv.paid_amount}</td><td>₹${inv.balance_amount}</td>
-      <td>${inv.balance_amount>0 ? '<span class="tag due">Due</span>' : '<span class="tag paid">Paid</span>'}</td>
-      <td><button class="secondary" onclick="printInvoice('${inv.id}')">🖨️ Print</button></td>
-    </tr>
-  `).join('');
-}
-
-// ============================================================
-// PRINTING (A4 Half Page)
-// ============================================================
-async function printInvoice(invId, silent){
-  const { data: inv } = await sb.from('invoices').select('*, parties(name, phone, village, gstin)').eq('id', invId).single();
-  const { data: items } = await sb.from('invoice_items').select('*, products(name)').eq('invoice_id', invId);
-  const typeLabel = { sale:'TAX / RETAIL INVOICE', purchase:'PURCHASE INVOICE', sales_return:'SALES RETURN / CREDIT NOTE', purchase_return:'PURCHASE RETURN / DEBIT NOTE' }[inv.invoice_type];
-
-  const html = `
-  <div class="invoice-print">
-    <h2>New Venktesh Agro Agency</h2>
-    <div class="small">खत-बियाणे विक्रेता | ${typeLabel}</div>
-    <hr>
-    <div><b>Invoice No:</b> ${inv.invoice_no} &nbsp; <b>Date:</b> ${inv.invoice_date}</div>
-    <div><b>Party:</b> ${inv.parties?.name||'-'} ${inv.parties?.village? '('+inv.parties.village+')':''}</div>
-    <div><b>Phone:</b> ${inv.parties?.phone||'-'} ${inv.parties?.gstin? ' | GSTIN: '+inv.parties.gstin : ''}</div>
-    <table>
-      <thead><tr><th>वस्तू</th><th>Qty</th><th>Rate</th><th>GST%</th><th>Amount</th></tr></thead>
-      <tbody>${items.map(it=>`<tr><td>${it.products?.name||''}</td><td>${it.qty_kg}</td><td>₹${it.rate}</td><td>${it.gst_percent}%</td><td>₹${it.amount.toFixed(2)}</td></tr>`).join('')}</tbody>
-    </table>
-    <div><b>Subtotal:</b> ₹${inv.subtotal} | <b>Discount:</b> ₹${inv.discount_amount} | <b>GST:</b> ₹${inv.gst_amount} | <b>Round Off:</b> ₹${inv.round_off}</div>
-    <div style="font-size:13px;"><b>Total: ₹${inv.total_amount}</b> | Paid: ₹${inv.paid_amount} | Balance: ₹${inv.balance_amount}</div>
-    <div class="small" style="margin-top:20px;">Signature: ________________</div>
+async function printRateList(){
+  const shop = STATE.settings.shop_name || 'New Venktesh Agro Agency';
+  const rows = STATE.products.filter(p=>p.is_active!==false).map(p=>`<tr><td>${p.name}</td><td>${p.category||'-'}</td><td>${p.unit}</td><td>${fmt(p.sale_price)}</td></tr>`).join('');
+  const html = `<div class="invoice-print">
+    <div class="inv-header"><h2>${shop}</h2><p>${STATE.settings.shop_address||''}</p><p>फोन: ${STATE.settings.shop_phone||''} | GSTIN: ${STATE.settings.shop_gstin||'-'}</p>
+    <h3 style="margin-top:10px">📋 रेट लिस्ट - ${fmtDate(today())}</h3></div>
+    <table><thead><tr><th>उत्पादन</th><th>श्रेणी</th><th>युनिट</th><th>दर</th></tr></thead><tbody>${rows}</tbody></table>
+    <p style="text-align:center;margin-top:14px;font-size:11px">* दर बदलण्याचा अधिकार आमच्याकडे राखून ठेवला आहे</p>
   </div>`;
-
-  document.getElementById('printArea').innerHTML = html + html; // 2 copies on A4 half
-  if(!silent){ window.print(); }
-  else { showToast('बिल तयार - Invoice History मधून कधीही प्रिंट करू शकता'); }
+  printHTML(html);
 }
 
-async function printStatement(){
-  const partyId = document.getElementById('ledgerPartySelect').value;
-  if(!partyId){ showToast('आधी पार्टी निवडा'); return; }
-  const party = parties.find(p=>p.id===partyId);
-  const { data } = await sb.from('ledger_entries').select('*').eq('party_id', partyId).order('entry_date');
-  let running = party.opening_balance||0;
-  const rows = (data||[]).map(l=>{ running += l.amount; return `<tr><td>${l.entry_date}</td><td>${l.entry_type}</td><td>₹${l.amount}</td><td>₹${running.toFixed(2)}</td></tr>`; }).join('');
-  document.getElementById('printArea').innerHTML = `
-    <div class="invoice-print" style="width:96%;">
-      <h2>New Venktesh Agro Agency - Party Statement</h2>
-      <div><b>Party:</b> ${party.name} | <b>Village:</b> ${party.village||'-'} | <b>Phone:</b> ${party.phone||'-'}</div>
-      <table><thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Running Balance</th></tr></thead><tbody>${rows}</tbody></table>
-      <div style="margin-top:10px;"><b>अंतिम शिल्लक: ₹${running.toFixed(2)}</b></div>
-    </div>`;
-  window.print();
+// =====================================================
+// INVOICES / BILLING
+// =====================================================
+async function loadInvoices(){
+  const search = ($('billSearch')?.value||'').toLowerCase();
+  const type = $('billTypeFilter')?.value||'';
+  const from = $('billDateFrom')?.value||'';
+  const to = $('billDateTo')?.value||'';
+  let q = sb.from('invoices').select('*,parties(name)').eq('financial_year',STATE.currentFY).order('invoice_date',{ascending:false}).order('id',{ascending:false});
+  if(type) q = q.eq('type',type);
+  const {data,error}=await q;
+  if(error){ toast('Invoices load error','error'); return; }
+  STATE.invoices = data || [];
+  const filtered = STATE.invoices.filter(inv=>{
+    if(from && inv.invoice_date<from) return false;
+    if(to && inv.invoice_date>to) return false;
+    if(search){
+      const pname = (inv.parties?.name||'').toLowerCase();
+      if(!inv.invoice_no.toLowerCase().includes(search) && !pname.includes(search)) return false;
+    }
+    return true;
+  });
+  renderInvoices(filtered);
+}
+function renderInvoices(list){
+  const typeBadge = t => ({sales:'<span class="badge badge-green">विक्री</span>',purchase:'<span class="badge badge-blue">खरेदी</span>',sales_return:'<span class="badge badge-orange">↩️ विक्री परतावा</span>',purchase_return:'<span class="badge badge-gray">↩️ खरेदी परतावा</span>'}[t]||'');
+  $('invoicesTable').innerHTML = list.map(inv=>`<tr>
+    <td>${fmtDate(inv.invoice_date)}</td>
+    <td><b>${inv.invoice_no}</b></td>
+    <td>${typeBadge(inv.type)}</td>
+    <td>${inv.parties?.name||'walk-in'}</td>
+    <td>${fmt(inv.total)}</td>
+    <td>${inv.balance_amount>0?'<span style="color:var(--red)">'+fmt(inv.balance_amount)+'</span>':'<span style="color:var(--green-700)">पूर्ण</span>'}</td>
+    <td class="actions">
+      <button class="btn btn-sm btn-secondary" onclick="viewInvoice(${inv.id})">👁️</button>
+      <button class="btn btn-sm btn-primary" onclick="printInvoice(${inv.id})">🖨️</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteInvoice(${inv.id})">🗑️</button>
+    </td></tr>`).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--gray-500)">कोणतीही बिले नाहीत</td></tr>';
+}
+async function openBillModal(type, linkedId){
+  await loadProducts(); await loadParties();
+  const isReturn = type.includes('return');
+  const isPurchase = type.includes('purchase');
+  const title = {sales:'नवीन विक्री बिल',purchase:'नवीन खरेदी बिल',sales_return:'विक्री परतावा',purchase_return:'खरेदी परतावा'}[type];
+  const partyLabel = isPurchase ? 'सप्लायर' : 'ग्राहक';
+  const partyOptions = STATE.parties.filter(p=>{
+    if(isPurchase) return p.type==='supplier'||p.type==='both';
+    return p.type==='customer'||p.type==='both';
+  });
+  let linkedInvData = null;
+  if(isReturn && linkedId){
+    const {data}=await sb.from('invoices').select('*,invoice_items(*),parties(name)').eq('id',linkedId).single();
+    linkedInvData = data;
+  }
+  openModal(`<div class="modal-header"><h2>${title}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    ${linkedInvData?`<div class="alert alert-info">🔗 मूळ बिल: <b>${linkedInvData.invoice_no}</b> (${fmtDate(linkedInvData.invoice_date)}) - ${linkedInvData.parties?.name||''}</div>`:''}
+    <div class="form-grid">
+      <div class="form-group"><label>${partyLabel}</label>
+        <select id="bParty" onchange="onPartyChange()">
+          <option value="">-- निवडा --</option>
+          ${partyOptions.map(p=>`<option value="${p.id}">${p.name}${p.village?' ('+p.village+')':''}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label>तारीख</label><input type="date" id="bDate" value="${today()}"></div>
+      <div class="form-group"><label>B2B (GST सह)</label>
+        <label class="toggle"><input type="checkbox" id="bB2B" onchange="recalcBill()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="form-group"><label>दलाल</label>
+        <select id="bAgent"><option value="">-- नाही --</option>${STATE.parties.filter(p=>p.type==='commission_agent').map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+      </div>
+    </div>
+    <h3 style="margin:14px 0 8px;color:var(--green-800);font-size:14px">🛒 वस्तू</h3>
+    <div style="overflow-x:auto">
+    <table class="items-table" id="bItems">
+      <thead><tr><th>उत्पादन</th><th>बॅच</th><th>प्रमाण</th><th>दर</th><th>सवलत%</th><th>GST%</th><th>रक्कम</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="addBillItem()" style="margin-top:6px">➕ वस्तू जोडा</button>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="form-group"><label>बिल सवलत ₹</label><input type="number" step="0.01" id="bDisc" value="0" oninput="recalcBill()"></div>
+      <div class="form-group"><label>गोलाकार</label><input type="number" step="0.01" id="bRound" value="0" oninput="recalcBill()"></div>
+      <div class="form-group"><label>पेमेंट मोड</label>
+        <select id="bPayMode"><option value="cash">रोख</option><option value="udhaari">उधारी</option><option value="online">ऑनलाईन</option><option value="mixed">मिश्र</option></select>
+      </div>
+      <div class="form-group"><label>रक्कम भरली</label><input type="number" step="0.01" id="bPaid" value="0" oninput="recalcBill()"></div>
+    </div>
+    <div class="bill-summary" id="bSummary"></div>
+    <div class="form-group" style="margin-top:10px"><label>टीप</label><textarea id="bNotes"></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="saveBill('${type}',${linkedId||'null'})">💾 बिल जतन करा</button>
+      <button class="btn btn-secondary" onclick="saveBill('${type}',${linkedId||'null'},true)">💾 + 🖨️ जतन व प्रिंट</button>
+    </div>`);
+  addBillItem();
+  if(linkedInvData){
+    // Pre-fill return items from original
+    $('bParty').value = linkedInvData.party_id||'';
+    $('bB2B').checked = linkedInvData.is_b2b;
+    document.querySelector('#bItems tbody').innerHTML='';
+    linkedInvData.invoice_items.forEach(it=>{
+      addBillItem();
+      const rows = document.querySelectorAll('#bItems tbody tr');
+      const row = rows[rows.length-1];
+      row.querySelector('.it-prod').value = it.product_id;
+      row.querySelector('.it-qty').value = it.qty;
+      row.querySelector('.it-rate').value = it.rate;
+      row.querySelector('.it-disc').value = it.discount_percent;
+      row.querySelector('.it-gst').value = it.gst_percent;
+      calcItemRow(row);
+    });
+    recalcBill();
+  }
+}
+function addBillItem(){
+  const tbody = document.querySelector('#bItems tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><select class="it-prod" onchange="onProductChange(this)"><option value="">-- निवडा --</option>${STATE.products.map(p=>`<option value="${p.id}" data-rate="${p.sale_price}" data-gst="${p.gst_percent}" data-batch="${p.batch_no||''}">${p.name}</option>`).join('')}</select></td>
+    <td><input type="text" class="it-batch"></td>
+    <td><input type="number" step="0.01" class="it-qty" value="1" oninput="calcItemRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="it-rate" value="0" oninput="calcItemRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="it-disc" value="0" oninput="calcItemRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="it-gst" value="0" oninput="calcItemRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="it-amt" value="0" readonly style="background:var(--gray-50);font-weight:600"></td>
+    <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();recalcBill()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+function onProductChange(sel){
+  const opt = sel.selectedOptions[0];
+  const tr = sel.closest('tr');
+  tr.querySelector('.it-rate').value = opt.dataset.rate||0;
+  tr.querySelector('.it-gst').value = opt.dataset.gst||0;
+  tr.querySelector('.it-batch').value = opt.dataset.batch||'';
+  calcItemRow(tr);
+}
+function calcItemRow(tr){
+  const qty = parseFloat(tr.querySelector('.it-qty').value)||0;
+  const rate = parseFloat(tr.querySelector('.it-rate').value)||0;
+  const disc = parseFloat(tr.querySelector('.it-disc').value)||0;
+  const gst = parseFloat(tr.querySelector('.it-gst').value)||0;
+  const base = qty*rate;
+  const afterDisc = base * (1-disc/100);
+  const total = afterDisc * (1+gst/100);
+  tr.querySelector('.it-amt').value = total.toFixed(2);
+  recalcBill();
+}
+function recalcBill(){
+  const rows = document.querySelectorAll('#bItems tbody tr');
+  let subtotal=0, cgst=0, sgst=0, igst=0;
+  rows.forEach(r=>{
+    const amt = parseFloat(r.querySelector('.it-amt').value)||0;
+    const gst = parseFloat(r.querySelector('.it-gst').value)||0;
+    const base = amt/(1+gst/100);
+    subtotal += base;
+    const gstAmt = amt-base;
+    if($('bB2B').checked && STATE.settings.shop_gstin){
+      // intra/inter state check - simplified: assume intra for now
+      cgst += gstAmt/2; sgst += gstAmt/2;
+    } else {
+      igst += gstAmt;
+    }
+  });
+  const disc = parseFloat($('bDisc').value)||0;
+  const rnd = parseFloat($('bRound').value)||0;
+  const total = subtotal+cgst+sgst+igst-disc+rnd;
+  const paid = parseFloat($('bPaid').value)||0;
+  const bal = total-paid;
+  $('bSummary').innerHTML = `
+    <div class="row"><span>एकूण (Subtotal):</span><span>${fmt(subtotal)}</span></div>
+    ${cgst?`<div class="row"><span>CGST:</span><span>${fmt(cgst)}</span></div>`:''}
+    ${sgst?`<div class="row"><span>SGST:</span><span>${fmt(sgst)}</span></div>`:''}
+    ${igst?`<div class="row"><span>IGST:</span><span>${fmt(igst)}</span></div>`:''}
+    ${disc?`<div class="row"><span>सवलत:</span><span>-${fmt(disc)}</span></div>`:''}
+    ${rnd?`<div class="row"><span>गोलाकार:</span><span>${fmt(rnd)}</span></div>`:''}
+    <div class="row total"><span>एकूण रक्कम:</span><span>${fmt(total)}</span></div>
+    <div class="row"><span>भरलेली रक्कम:</span><span>${fmt(paid)}</span></div>
+    <div class="row" style="color:${bal>0?'var(--red)':'var(--green-700)'}"><span>शिल्लक:</span><span><b>${fmt(bal)}</b></span></div>`;
+  window._billCalc = {subtotal,cgst,sgst,igst,disc,rnd,total,paid,bal};
+}
+async function saveBill(type, linkedId, printAfter){
+  const calc = window._billCalc;
+  if(!calc || calc.total<=0){ toast('किमान एक वस्तू जोडा','error'); return; }
+  const partyId = $('bParty').value?parseInt($('bParty').value):null;
+  const payMode = $('bPayMode').value;
+  if(payMode==='udhaari' && calc.paid>0){
+    // ok partial
+  }
+  // Generate invoice number
+  const prefix = {sales:'SV',purchase:'PV',sales_return:'SR',purchase_return:'PR'}[type];
+  const {data:seq} = await sb.from('invoice_sequences').select('*').eq('prefix',prefix).eq('financial_year',STATE.currentFY).single();
+  let nextNum = 1;
+  if(seq) nextNum = seq.last_number+1;
+  const invoiceNo = `${prefix}/${STATE.currentFY}/${String(nextNum).padStart(4,'0')}`;
+  // Check duplicate
+  const {data:dup} = await sb.from('invoices').select('id').eq('invoice_no',invoiceNo).limit(1);
+  if(dup && dup.length){ toast('Duplicate invoice number!','error'); return; }
+  // Build invoice object
+  const inv = {
+    invoice_no:invoiceNo, type, party_id:partyId,
+    commission_agent_id:$('bAgent').value?parseInt($('bAgent').value):null,
+    invoice_date:$('bDate').value, financial_year:STATE.currentFY,
+    subtotal:calc.subtotal, discount_percent:0, discount_amount:calc.disc,
+    cgst:calc.cgst, sgst:calc.sgst, igst:calc.igst,
+    round_off:calc.rnd, total:calc.total,
+    paid_amount:calc.paid, balance_amount:calc.bal,
+    payment_mode:payMode, is_b2b:$('bB2B').checked,
+    notes:$('bNotes').value, linked_invoice_id:linkedId
+  };
+  const {data:invData,error}=await sb.from('invoices').insert(inv).select().single();
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  // Insert items
+  const rows = document.querySelectorAll('#bItems tbody tr');
+  const items = [];
+  for(const r of rows){
+    const pid = parseInt(r.querySelector('.it-prod').value);
+    if(!pid) continue;
+    const qty = parseFloat(r.querySelector('.it-qty').value)||0;
+    const rate = parseFloat(r.querySelector('.it-rate').value)||0;
+    const disc = parseFloat(r.querySelector('.it-disc').value)||0;
+    const gst = parseFloat(r.querySelector('.it-gst').value)||0;
+    const amt = parseFloat(r.querySelector('.it-amt').value)||0;
+    const batch = r.querySelector('.it-batch').value;
+    items.push({invoice_id:invData.id,product_id:pid,batch_no:batch,qty,rate,discount_percent:disc,gst_percent:gst,amount:amt});
+    // Update stock
+    const prod = STATE.products.find(p=>p.id===pid);
+    const godown_id = prod.godown_id||0;
+    const isOut = (type==='sales'||type==='purchase_return');
+    const signedQty = isOut?-qty:qty;
+    // Get or create stock record
+    const {data:stk} = await sb.from('stock').select('*').eq('product_id',pid).eq('godown_id',godown_id).eq('batch_no',batch||'').limit(1);
+    if(stk && stk.length){
+      const newQty = Number(stk[0].qty)+signedQty;
+      if(newQty<0){ toast(`Negative stock for ${prod.name}!`,'error'); continue; }
+      await sb.from('stock').update({qty:newQty}).eq('id',stk[0].id);
+    } else {
+      if(signedQty<0){ toast(`No stock for ${prod.name}!`,'error'); continue; }
+      await sb.from('stock').insert({product_id:pid,godown_id,batch_no:batch||'',qty:signedQty});
+    }
+    // Stock movement
+    await sb.from('stock_movements').insert({
+      product_id:pid, godown_id, batch_no:batch||'',
+      type:{sales:'out',purchase:'in',sales_return:'return_in',purchase_return:'return_out'}[type],
+      qty:signedQty, reference_type:'invoice', reference_id:invData.id
+    });
+  }
+  if(items.length) await sb.from('invoice_items').insert(items);
+  // Update sequence
+  if(seq) await sb.from('invoice_sequences').update({last_number:nextNum}).eq('id',seq.id);
+  else await sb.from('invoice_sequences').insert({prefix,financial_year:STATE.currentFY,last_number:nextNum});
+  // Ledger entry (for credit sales/purchases)
+  if(partyId && calc.bal!==0){
+    const amt = {sales:calc.total,purchase:-calc.total,sales_return:-calc.total,purchase_return:calc.total}[type];
+    await sb.from('ledger_entries').insert({
+      party_id:partyId, entry_date:inv.invoice_date, type, amount:amt,
+      invoice_id:invData.id, notes:invoiceNo
+    });
+  }
+  // Payment received entry (if partial/cash)
+  if(partyId && calc.paid>0 && payMode!=='udhaari'){
+    const ptype = (type==='sales'||type==='purchase_return')?'payment_received':'payment_given';
+    const amt = (type==='sales'||type==='purchase_return')?-calc.paid:calc.paid;
+    await sb.from('ledger_entries').insert({
+      party_id:partyId, entry_date:inv.invoice_date, type:ptype, amount:amt,
+      invoice_id:invData.id, notes:'Payment against '+invoiceNo
+    });
+  }
+  await Promise.all([loadInvoices(),loadProducts(),loadParties()]);
+  closeModal();
+  toast('बिल जतन केले! ✅ '+invoiceNo);
+  if(printAfter) printInvoice(invData.id);
+}
+async function viewInvoice(id){
+  const {data:inv}=await sb.from('invoices').select('*,parties(name),invoice_items(*,products(name,unit))').eq('id',id).single();
+  if(!inv){ toast('Invoice not found','error'); return; }
+  openModal(`<div class="modal-header"><h2>बिल ${inv.invoice_no}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">तारीख</div><div class="stat-value" style="font-size:16px">${fmtDate(inv.invoice_date)}</div></div>
+      <div class="stat-card"><div class="stat-label">पार्टी</div><div class="stat-value" style="font-size:16px">${inv.parties?.name||'walk-in'}</div></div>
+      <div class="stat-card"><div class="stat-label">प्रकार</div><div class="stat-value" style="font-size:16px">${inv.type}</div></div>
+      <div class="stat-card ${inv.balance_amount>0?'red':''}"><div class="stat-label">शिल्लक</div><div class="stat-value">${fmt(inv.balance_amount)}</div></div>
+    </div>
+    <table class="items-table" style="margin-top:10px">
+      <thead><tr><th>उत्पादन</th><th>प्रमाण</th><th>दर</th><th>सवलत%</th><th>GST%</th><th>रक्कम</th></tr></thead>
+      <tbody>${(inv.invoice_items||[]).map(it=>`<tr><td>${it.products?.name||'#'+it.product_id}</td><td>${it.qty}</td><td>${fmt(it.rate)}</td><td>${it.discount_percent}%</td><td>${it.gst_percent}%</td><td>${fmt(it.amount)}</td></tr>`).join('')}</tbody>
+    </table>
+    <div class="bill-summary">
+      <div class="row"><span>Subtotal:</span><span>${fmt(inv.subtotal)}</span></div>
+      ${inv.cgst?`<div class="row"><span>CGST:</span><span>${fmt(inv.cgst)}</span></div>`:''}
+      ${inv.sgst?`<div class="row"><span>SGST:</span><span>${fmt(inv.sgst)}</span></div>`:''}
+      ${inv.igst?`<div class="row"><span>IGST:</span><span>${fmt(inv.igst)}</span></div>`:''}
+      <div class="row total"><span>एकूण:</span><span>${fmt(inv.total)}</span></div>
+      <div class="row"><span>भरले:</span><span>${fmt(inv.paid_amount)}</span></div>
+      <div class="row"><span>शिल्लक:</span><span>${fmt(inv.balance_amount)}</span></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="closeModal();printInvoice(${id})">🖨️ प्रिंट</button>
+      ${inv.balance_amount>0?`<button class="btn btn-secondary" onclick="closeModal();addPartialPayment(${id})">💵 आंशिक पेमेंट</button>`:''}
+    </div>`);
+}
+async function addPartialPayment(invId){
+  const {data:inv}=await sb.from('invoices').select('*,parties(name)').eq('id',invId).single();
+  openModal(`<div class="modal-header"><h2>आंशिक पेमेंट - ${inv.invoice_no}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <p>पार्टी: <b>${inv.parties?.name||'walk-in'}</b></p>
+    <p>शिल्लक: <b style="color:var(--red)">${fmt(inv.balance_amount)}</b></p>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="form-group"><label>तारीख</label><input type="date" id="ppDate" value="${today()}"></div>
+      <div class="form-group"><label>रक्कम</label><input type="number" step="0.01" id="ppAmt" value="${inv.balance_amount}"></div>
+      <div class="form-group"><label>मोड</label><select id="ppMode"><option value="cash">रोख</option><option value="online">ऑनलाईन</option></select></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="savePartialPayment(${invId})">💾 जतन करा</button>`);
+}
+async function savePartialPayment(invId){
+  const {data:inv}=await sb.from('invoices').select('*').eq('id',invId).single();
+  const amt = parseFloat($('ppAmt').value)||0;
+  if(amt<=0 || amt>inv.balance_amount){ toast('चुकीची रक्कम','error'); return; }
+  const newPaid = Number(inv.paid_amount)+amt;
+  const newBal = Number(inv.total)-newPaid;
+  await sb.from('invoices').update({paid_amount:newPaid,balance_amount:newBal}).eq('id',invId);
+  // Ledger entry
+  const ptype = (inv.type==='sales'||inv.type==='purchase_return')?'payment_received':'payment_given';
+  const ledAmt = (inv.type==='sales'||inv.type==='purchase_return')?-amt:amt;
+  await sb.from('ledger_entries').insert({
+    party_id:inv.party_id, entry_date:$('ppDate').value, type:ptype, amount:ledAmt,
+    invoice_id:invId, notes:'Payment against '+inv.invoice_no
+  });
+  await loadInvoices(); closeModal(); toast('पेमेंट जतन! ✅');
+}
+async function deleteInvoice(id){
+  if(!confirmAction('हे बिल हटवायचे? स्टॉक आणि लेजर आपोआप उलटवले जातील.')) return;
+  const {data:inv}=await sb.from('invoices').select('*').eq('id',id).single();
+  const {data:items}=await sb.from('invoice_items').select('*').eq('invoice_id',id);
+  // Reverse stock
+  for(const it of items){
+    const {data:prod}=await sb.from('products').select('*').eq('id',it.product_id).single();
+    const godown_id = prod.godown_id||0;
+    const isOut = (inv.type==='sales'||inv.type==='purchase_return');
+    const signedQty = isOut?it.qty:-it.qty; // reverse
+    const {data:stk}=await sb.from('stock').select('*').eq('product_id',it.product_id).eq('godown_id',godown_id).eq('batch_no',it.batch_no||'').limit(1);
+    if(stk && stk.length) await sb.from('stock').update({qty:Number(stk[0].qty)+signedQty}).eq('id',stk[0].id);
+    await sb.from('stock_movements').insert({
+      product_id:it.product_id, godown_id, batch_no:it.batch_no||'',
+      type:'adjustment', qty:signedQty, reference_type:'invoice_delete', reference_id:id,
+      notes:'Reversal of '+inv.invoice_no
+    });
+  }
+  // Delete ledger entries for this invoice
+  await sb.from('ledger_entries').delete().eq('invoice_id',id);
+  // Delete items and invoice
+  await sb.from('invoice_items').delete().eq('invoice_id',id);
+  await sb.from('invoices').delete().eq('id',id);
+  await Promise.all([loadInvoices(),loadProducts(),loadParties()]);
+  toast('बिल हटवले! ✅');
+}
+async function printInvoice(id){
+  const {data:inv}=await sb.from('invoices').select('*,parties(*),invoice_items(*,products(name,unit,hsn_code))').eq('id',id).single();
+  if(!inv){ toast('Invoice not found','error'); return; }
+  const s = STATE.settings;
+  const typeLabel = {sales:'TAX INVOICE',purchase:'PURCHASE INVOICE',sales_return:'CREDIT NOTE (Sales Return)',purchase_return:'DEBIT NOTE (Purchase Return)'}[inv.type];
+  const rows = (inv.invoice_items||[]).map((it,i)=>`<tr>
+    <td>${i+1}</td><td>${it.products?.name||''}</td><td>${it.products?.hsn_code||'-'}</td>
+    <td>${it.qty} ${it.products?.unit||''}</td><td>${fmt(it.rate)}</td>
+    <td>${it.discount_percent}%</td><td>${it.gst_percent}%</td><td>${fmt(it.amount)}</td></tr>`).join('');
+  const amountWords = numberToWords(Math.round(inv.total));
+  const html = `<div class="invoice-print">
+    <div class="inv-header">
+      <h2>${s.shop_name||'New Venktesh Agro Agency'}</h2>
+      <p>${s.shop_address||''}</p>
+      <p>फोन: ${s.shop_phone||'-'} | GSTIN: ${s.shop_gstin||'-'}</p>
+      ${s.shop_bank_name?`<p>बँक: ${s.shop_bank_name} | A/C: ${s.shop_bank_account} | IFSC: ${s.shop_bank_ifsc}</p>`:''}
+      ${s.shop_upi_id?`<p>UPI: ${s.shop_upi_id}</p>`:''}
+      <h3 style="margin-top:8px">${typeLabel}</h3>
+    </div>
+    <div class="inv-meta">
+      <div><b>Invoice #:</b> ${inv.invoice_no}<br><b>Date:</b> ${fmtDate(inv.invoice_date)}</div>
+      <div style="text-align:right"><b>${inv.type.includes('purchase')?'Supplier':'Customer'}:</b> ${inv.parties?.name||'walk-in'}<br>
+      ${inv.parties?.gstin?'<b>GSTIN:</b> '+inv.parties.gstin:''}
+      ${inv.parties?.village?'<br><b>Village:</b> '+inv.parties.village:''}
+      ${inv.parties?.phone?'<br><b>Phone:</b> '+inv.parties.phone:''}</div>
+    </div>
+    <table><thead><tr><th>#</th><th>उत्पादन</th><th>HSN</th><th>प्रमाण</th><th>दर</th><th>सवलत%</th><th>GST%</th><th>रक्कम</th></tr></thead><tbody>${rows}</tbody></table>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <div style="font-size:11px"><b>Amount in words:</b><br>${amountWords}</div>
+      <div style="text-align:right;font-size:12px">
+        <div>Subtotal: ${fmt(inv.subtotal)}</div>
+        ${inv.cgst?`<div>CGST: ${fmt(inv.cgst)}</div>`:''}
+        ${inv.sgst?`<div>SGST: ${fmt(inv.sgst)}</div>`:''}
+        ${inv.igst?`<div>IGST: ${fmt(inv.igst)}</div>`:''}
+        ${inv.discount_amount?`<div>Discount: -${fmt(inv.discount_amount)}</div>`:''}
+        ${inv.round_off?`<div>Round off: ${fmt(inv.round_off)}</div>`:''}
+        <div style="font-size:14px;font-weight:bold;border-top:1px solid #000;padding-top:2px">TOTAL: ${fmt(inv.total)}</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:11px">
+      <div><b>Paid:</b> ${fmt(inv.paid_amount)} | <b>Balance:</b> ${fmt(inv.balance_amount)} | <b>Mode:</b> ${inv.payment_mode}</div>
+    </div>
+    <div class="inv-footer">
+      <p><b>Terms:</b> 1) माल परत घेतला जाणार नाही. 2) सर्व वाद पुणे न्यायालयाच्या अधीन.</p>
+      <div class="sign"><p>_______________________</p><p>सही / Signature</p></div>
+      <p style="text-align:center;margin-top:10px;font-size:10px">*** धन्यवाद / Thank You! ***</p>
+    </div>
+  </div>`;
+  printHTML(html);
+}
+function printHTML(html){
+  const w = window.open('','_blank','width=800,height=600');
+  w.document.write(`<html><head><title>Print</title><style>
+    body{font-family:Arial,sans-serif;padding:10px}
+    .invoice-print{max-width:210mm;margin:0 auto}
+    .inv-header{text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:10px}
+    .inv-header h2{font-size:18px;margin:4px 0}
+    .inv-header p{font-size:11px;margin:2px 0}
+    .inv-meta{display:flex;justify-content:space-between;font-size:11px;margin:8px 0}
+    table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+    table th,table td{border:1px solid #000;padding:4px 6px}
+    .inv-footer{margin-top:12px;font-size:11px}
+    .inv-footer .sign{text-align:right;margin-top:30px}
+  </style></head><body>${html}</body></html>`);
+  w.document.close();
+  setTimeout(()=>{w.print();},500);
 }
 
-// ============================================================
+// =====================================================
+// QUOTATIONS
+// =====================================================
+async function loadQuotations(){
+  const {data,error}=await sb.from('quotations').select('*,parties(name)').eq('financial_year',STATE.currentFY).order('id',{ascending:false});
+  if(error){ toast('Quotations load error','error'); return; }
+  STATE.quotations = data || [];
+  renderQuotations();
+}
+function renderQuotations(){
+  $('quotationsTable').innerHTML = STATE.quotations.map(q=>`<tr>
+    <td>${fmtDate(q.quotation_date)}</td>
+    <td><b>${q.quotation_no}</b></td>
+    <td>${q.parties?.name||'-'}</td>
+    <td>${fmt(q.total)}</td>
+    <td>${q.is_converted?'<span class="badge badge-green">रुपांतरित</span>':'<span class="badge badge-orange">प्रलंबित</span>'}</td>
+    <td class="actions">
+      ${!q.is_converted?`<button class="btn btn-sm btn-primary" onclick="convertQuotation(${q.id})">🔄 बिल करा</button>`:''}
+      <button class="btn btn-sm btn-danger" onclick="deleteQuotation(${q.id})">🗑️</button>
+    </td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-500)">कोणतीही कोटेशने नाहीत</td></tr>';
+}
+async function openQuotationModal(){
+  await loadProducts(); await loadParties();
+  openModal(`<div class="modal-header"><h2>नवीन कोटेशन</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>पार्टी</label>
+        <select id="qParty"><option value="">-- निवडा --</option>${STATE.parties.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>तारीख</label><input type="date" id="qDate" value="${today()}"></div>
+    </div>
+    <h3 style="margin:14px 0 8px;color:var(--green-800);font-size:14px">🛒 वस्तू</h3>
+    <table class="items-table" id="qItems"><thead><tr><th>उत्पादन</th><th>प्रमाण</th><th>दर</th><th>सवलत%</th><th>GST%</th><th>रक्कम</th><th></th></tr></thead><tbody></tbody></table>
+    <button class="btn btn-secondary btn-sm" onclick="addQItem()" style="margin-top:6px">➕ वस्तू जोडा</button>
+    <div class="form-group" style="margin-top:10px"><label>टीप</label><textarea id="qNotes"></textarea></div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveQuotation()">💾 जतन करा</button>`);
+  addQItem();
+}
+function addQItem(){
+  const tbody = document.querySelector('#qItems tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><select class="qi-prod" onchange="onQProdChange(this)"><option value="">-- निवडा --</option>${STATE.products.map(p=>`<option value="${p.id}" data-rate="${p.sale_price}" data-gst="${p.gst_percent}">${p.name}</option>`).join('')}</select></td>
+    <td><input type="number" step="0.01" class="qi-qty" value="1" oninput="calcQRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="qi-rate" value="0" oninput="calcQRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="qi-disc" value="0" oninput="calcQRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="qi-gst" value="0" oninput="calcQRow(this.closest('tr'))"></td>
+    <td><input type="number" step="0.01" class="qi-amt" value="0" readonly></td>
+    <td><button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();recalcQ()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+function onQProdChange(sel){
+  const opt = sel.selectedOptions[0];
+  const tr = sel.closest('tr');
+  tr.querySelector('.qi-rate').value = opt.dataset.rate||0;
+  tr.querySelector('.qi-gst').value = opt.dataset.gst||0;
+  calcQRow(tr);
+}
+function calcQRow(tr){
+  const qty = parseFloat(tr.querySelector('.qi-qty').value)||0;
+  const rate = parseFloat(tr.querySelector('.qi-rate').value)||0;
+  const disc = parseFloat(tr.querySelector('.qi-disc').value)||0;
+  const gst = parseFloat(tr.querySelector('.qi-gst').value)||0;
+  const base = qty*rate*(1-disc/100);
+  const total = base*(1+gst/100);
+  tr.querySelector('.qi-amt').value = total.toFixed(2);
+  recalcQ();
+}
+function recalcQ(){
+  const rows = document.querySelectorAll('#qItems tbody tr');
+  let total=0;
+  rows.forEach(r=>total+=parseFloat(r.querySelector('.qi-amt').value)||0);
+  window._qTotal = total;
+}
+async function saveQuotation(){
+  const total = window._qTotal||0;
+  if(total<=0){ toast('किमान एक वस्तू जोडा','error'); return; }
+  const {data:seq}=await sb.from('invoice_sequences').select('*').eq('prefix','QT').eq('financial_year',STATE.currentFY).single();
+  let nextNum = 1;
+  if(seq) nextNum = seq.last_number+1;
+  const qtNo = `QT/${STATE.currentFY}/${String(nextNum).padStart(4,'0')}`;
+  const obj = {
+    quotation_no:qtNo, party_id:$('qParty').value?parseInt($('qParty').value):null,
+    quotation_date:$('qDate').value, financial_year:STATE.currentFY,
+    total, notes:$('qNotes').value
+  };
+  const {data:qtData,error}=await sb.from('quotations').insert(obj).select().single();
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  const rows = document.querySelectorAll('#qItems tbody tr');
+  const items = [];
+  for(const r of rows){
+    const pid = parseInt(r.querySelector('.qi-prod').value);
+    if(!pid) continue;
+    items.push({
+      quotation_id:qtData.id, product_id:pid,
+      qty:parseFloat(r.querySelector('.qi-qty').value)||0,
+      rate:parseFloat(r.querySelector('.qi-rate').value)||0,
+      discount_percent:parseFloat(r.querySelector('.qi-disc').value)||0,
+      gst_percent:parseFloat(r.querySelector('.qi-gst').value)||0,
+      amount:parseFloat(r.querySelector('.qi-amt').value)||0
+    });
+  }
+  if(items.length) await sb.from('quotation_items').insert(items);
+  if(seq) await sb.from('invoice_sequences').update({last_number:nextNum}).eq('id',seq.id);
+  else await sb.from('invoice_sequences').insert({prefix:'QT',financial_year:STATE.currentFY,last_number:nextNum});
+  await loadQuotations(); closeModal(); toast('कोटेशन जतन! ✅ '+qtNo);
+}
+async function convertQuotation(id){
+  const qt = STATE.quotations.find(q=>q.id===id);
+  if(!qt){ toast('Not found','error'); return; }
+  const {data:items}=await sb.from('quotation_items').select('*').eq('quotation_id',id);
+  // Mark converted
+  await sb.from('quotations').update({is_converted:true}).eq('id',id);
+  // Open billing modal with items
+  await openBillModal('sales');
+  $('bParty').value = qt.party_id||'';
+  const tbody = document.querySelector('#bItems tbody');
+  tbody.innerHTML='';
+  for(const it of items){
+    addBillItem();
+    const rows = document.querySelectorAll('#bItems tbody tr');
+    const row = rows[rows.length-1];
+    row.querySelector('.it-prod').value = it.product_id;
+    row.querySelector('.it-qty').value = it.qty;
+    row.querySelector('.it-rate').value = it.rate;
+    row.querySelector('.it-disc').value = it.discount_percent;
+    row.querySelector('.it-gst').value = it.gst_percent;
+    calcItemRow(row);
+  }
+  recalcBill();
+  toast('कोटेशन बिलिंगमध्ये लोड! आता जतन करा.','info');
+}
+async function deleteQuotation(id){
+  if(!confirmAction('हे कोटेशन हटवायचे?')) return;
+  await sb.from('quotation_items').delete().eq('quotation_id',id);
+  await sb.from('quotations').delete().eq('id',id);
+  await loadQuotations(); toast('कोटेशन हटवले!');
+}
+
+// =====================================================
 // LEDGER
-// ============================================================
+// =====================================================
 async function loadLedger(){
-  const partyId = document.getElementById('ledgerPartySelect').value;
-  if(!partyId){ document.getElementById('ledgerTable').innerHTML=''; document.getElementById('ledgerTotal').textContent='₹0'; return; }
-  const { data, error } = await sb.from('ledger_entries').select('*').eq('party_id', partyId).order('entry_date');
-  if(error){ showToast('Error: '+error.message); return; }
-  const party = parties.find(p=>p.id===partyId);
-  let total = party?.opening_balance || 0;
-  document.getElementById('ledgerTable').innerHTML = (data||[]).map(l=>{
-    total += l.amount;
-    return `<tr><td>${l.entry_date}</td><td>${l.entry_type}</td><td>₹${l.amount}</td><td>${l.notes||''}</td></tr>`;
-  }).join('');
-  document.getElementById('ledgerTotal').textContent = '₹'+total.toFixed(2);
-}
-
-async function savePayment(){
-  const partyId = document.getElementById('ledgerPartySelect').value;
-  if(!partyId){ showToast('आधी पार्टी निवडा'); return; }
-  const amount = parseFloat(document.getElementById('paymentAmount').value)||0;
-  if(amount<=0){ showToast('योग्य रक्कम टाका'); return; }
-  const type = document.getElementById('paymentType').value;
-  const signedAmount = type==='payment_received' ? -amount : amount;
-  const { error } = await sb.from('ledger_entries').insert({
-    party_id: partyId, entry_type: type, amount: signedAmount,
-    notes: document.getElementById('paymentNotes').value
+  const pid = $('ledgerParty').value;
+  const from = $('ledgerFrom')?.value||'';
+  const to = $('ledgerTo')?.value||'';
+  if(!pid){ $('ledgerTable').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-500)">पार्टी निवडा</td></tr>'; $('ledgerSummary').innerHTML=''; return; }
+  const party = STATE.parties.find(p=>p.id==pid);
+  let q = sb.from('ledger_entries').select('*').eq('party_id',pid).order('entry_date',{ascending:true}).order('id',{ascending:true});
+  const {data,error}=await q;
+  if(error){ toast('Ledger load error','error'); return; }
+  let entries = data || [];
+  if(from) entries = entries.filter(e=>e.entry_date>=from);
+  if(to) entries = entries.filter(e=>e.entry_date<=to);
+  let bal = Number(party.opening_balance||0);
+  let totalDr=0, totalCr=0;
+  const rows = entries.map(e=>{
+    const prev = bal;
+    bal += Number(e.amount);
+    const dr = e.amount>0?e.amount:0;
+    const cr = e.amount<0?-e.amount:0;
+    totalDr += dr; totalCr += cr;
+    return `<tr><td>${fmtDate(e.entry_date)}</td><td>${e.type}</td><td>${e.notes||''}</td><td style="color:var(--red)">${dr?fmt(dr):''}</td><td style="color:var(--green-700)">${cr?fmt(cr):''}</td><td><b>${fmt(bal)}</b></td></tr>`;
   });
-  if(error){ showToast('Error: '+error.message); return; }
-  showToast('✅ पेमेंट सेव्ह झालं');
-  document.getElementById('paymentAmount').value=''; document.getElementById('paymentNotes').value='';
-  await loadLedger();
+  $('ledgerTable').innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center;padding:20px">कोणतेही व्यवहार नाहीत</td></tr>';
+  $('ledgerSummary').innerHTML = `
+    <div class="stat-card"><div class="stat-label">उघडणी</div><div class="stat-value">${fmt(party.opening_balance||0)}</div></div>
+    <div class="stat-card red"><div class="stat-label">एकूण जमा (देय)</div><div class="stat-value">${fmt(totalDr)}</div></div>
+    <div class="stat-card blue"><div class="stat-label">एकूण वजा (प्राप्त)</div><div class="stat-value">${fmt(totalCr)}</div></div>
+    <div class="stat-card ${bal>0?'red':'orange'}"><div class="stat-label">शिल्लक</div><div class="stat-value">${fmt(bal)}</div></div>`;
+}
+function openPaymentModal(type){
+  const title = type==='received'?'रक्कम प्राप्त':'रक्कम दिली';
+  openModal(`<div class="modal-header"><h2>${title}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>पार्टी</label>
+        <select id="pmParty">${STATE.parties.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>तारीख</label><input type="date" id="pmDate" value="${today()}"></div>
+      <div class="form-group"><label>रक्कम</label><input type="number" step="0.01" id="pmAmt" value="0"></div>
+      <div class="form-group"><label>मोड</label><select id="pmMode"><option value="cash">रोख</option><option value="online">ऑनलाईन</option><option value="cheque">धनादेश</option></select></div>
+    </div>
+    <div class="form-group" style="margin-top:10px"><label>टीप</label><textarea id="pmNotes"></textarea></div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="savePayment('${type}')">💾 जतन करा</button>`);
+}
+async function savePayment(type){
+  const pid = parseInt($('pmParty').value);
+  const amt = parseFloat($('pmAmt').value)||0;
+  if(!pid || amt<=0){ toast('पार्टी आणि रक्कम आवश्यक','error'); return; }
+  const ledType = type==='received'?'payment_received':'payment_given';
+  const ledAmt = type==='received'?-amt:amt; // received = reduces party's due = credit
+  await sb.from('ledger_entries').insert({
+    party_id:pid, entry_date:$('pmDate').value, type:ledType, amount:ledAmt,
+    notes:$('pmNotes').value+' ('+$('pmMode').value+')'
+  });
+  await loadParties(); closeModal(); toast('पेमेंट जतन! ✅');
+  if($('page-ledger').classList.contains('active')) loadLedger();
+}
+async function printPartyStatement(){
+  const pid = $('ledgerParty').value;
+  if(!pid){ toast('पार्टी निवडा','error'); return; }
+  const party = STATE.parties.find(p=>p.id==pid);
+  const {data:entries}=await sb.from('ledger_entries').select('*').eq('party_id',pid).order('entry_date',{ascending:true});
+  let bal = Number(party.opening_balance||0);
+  const rows = (entries||[]).map(e=>{
+    bal += Number(e.amount);
+    const dr = e.amount>0?e.amount:0;
+    const cr = e.amount<0?-e.amount:0;
+    return `<tr><td>${fmtDate(e.entry_date)}</td><td>${e.type}</td><td>${e.notes||''}</td><td>${dr?fmt(dr):''}</td><td>${cr?fmt(cr):''}</td><td>${fmt(bal)}</td></tr>`;
+  }).join('');
+  const s = STATE.settings;
+  const html = `<div class="invoice-print">
+    <div class="inv-header"><h2>${s.shop_name||''}</h2><p>${s.shop_address||''} | फोन: ${s.shop_phone||''}</p>
+    <h3 style="margin-top:8px">PARTY STATEMENT / PASSBOOK</h3></div>
+    <div class="inv-meta"><div><b>Party:</b> ${party.name}<br>${party.village?'Village: '+party.village+'<br>':''}${party.phone?'Phone: '+party.phone:''}</div><div style="text-align:right"><b>Date:</b> ${fmtDate(today())}</div></div>
+    <table><thead><tr><th>तारीख</th><th>प्रकार</th><th>तपशील</th><th>जमा</th><th>वजा</th><th>शिल्लक</th></tr></thead><tbody>${rows}</tbody></table>
+    <div style="margin-top:12px;text-align:right;font-size:14px"><b>अंतिम शिल्लक: ${fmt(bal)}</b></div>
+  </div>`;
+  printHTML(html);
+}
+async function sendWhatsAppReminder(partyId){
+  const party = STATE.parties.find(p=>p.id===partyId);
+  if(!party){ toast('Party not found','error'); return; }
+  // Compute balance
+  const {data:entries}=await sb.from('ledger_entries').select('*').eq('party_id',partyId);
+  let bal = Number(party.opening_balance||0);
+  (entries||[]).forEach(e=>bal+=Number(e.amount));
+  if(bal<=0){ toast('या पार्टीकडे कोणतीही उधारी नाही ✅','info'); return; }
+  const msg = `नमस्कार ${party.name} जी,\n\n${STATE.settings.shop_name||'New Venktesh Agro Agency'} कडे तुमची ${fmt(bal)} उधारी शिल्लक आहे.\n\nकृपया लवकरात लवकर रक्कम भरावी.\n\nधन्यवाद!`;
+  const phone = (party.phone||'').replace(/\D/g,'');
+  const url = `https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url,'_blank');
 }
 
-// ============================================================
+// =====================================================
+// STAFF
+// =====================================================
+async function loadStaff(){
+  const {data,error}=await sb.from('staff').select('*').order('name');
+  if(error){ toast('Staff load error','error'); return; }
+  STATE.staff = data || [];
+  renderStaff();
+}
+function renderStaff(){
+  $('staffTable').innerHTML = STATE.staff.map(s=>`<tr>
+    <td><b>${s.name}</b></td><td>${s.phone||'-'}</td><td>${s.role||'-'}</td>
+    <td>${fmt(s.salary)}</td>
+    <td>${s.is_active?'<span class="badge badge-green">सक्रिय</span>':'<span class="badge badge-gray">निष्क्रिय</span>'}</td>
+    <td class="actions">
+      <button class="btn btn-sm btn-primary" onclick="openStaffModal(${s.id})">✏️</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteStaff(${s.id})">🗑️</button>
+    </td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gray-500)">कोणतेही कर्मचारी नाहीत</td></tr>';
+}
+function openStaffModal(id){
+  const s = id?STATE.staff.find(x=>x.id===id):{};
+  openModal(`<div class="modal-header"><h2>${id?'कर्मचारी संपादित':'नवीन कर्मचारी'}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>नाव *</label><input type="text" id="sName" value="${s.name||''}"></div>
+      <div class="form-group"><label>फोन</label><input type="text" id="sPhone" value="${s.phone||''}"></div>
+      <div class="form-group"><label>पद</label><input type="text" id="sRole" value="${s.role||''}"></div>
+      <div class="form-group"><label>पगार</label><input type="number" step="0.01" id="sSalary" value="${s.salary||0}"></div>
+      <div class="form-group"><label>सायकल</label><select id="sCycle"><option value="monthly" ${s.salary_cycle==='monthly'?'selected':''}>मासिक</option><option value="daily" ${s.salary_cycle==='daily'?'selected':''}>दैनिक</option></select></div>
+      <div class="form-group"><label>स्थिती</label><select id="sActive"><option value="true" ${s.is_active!==false?'selected':''}>सक्रिय</option><option value="false" ${s.is_active===false?'selected':''}>निष्क्रिय</option></select></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveStaff(${id||'null'})">💾 जतन करा</button>`);
+}
+async function saveStaff(id){
+  const obj = {
+    name:$('sName').value.trim(), phone:$('sPhone').value.trim(),
+    role:$('sRole').value.trim(), salary:parseFloat($('sSalary').value)||0,
+    salary_cycle:$('sCycle').value, is_active:$('sActive').value==='true'
+  };
+  if(!obj.name){ toast('नाव आवश्यक','error'); return; }
+  let err;
+  if(id){ const r=await sb.from('staff').update(obj).eq('id',id); err=r.error; }
+  else { const r=await sb.from('staff').insert(obj); err=r.error; }
+  if(err){ toast('Error: '+err.message,'error'); return; }
+  await loadStaff(); closeModal(); toast(id?'कर्मचारी अपडेट! ✅':'कर्मचारी जोडला! ✅');
+}
+async function deleteStaff(id){
+  if(!confirmAction('हा कर्मचारी हटवायचा?')) return;
+  await sb.from('staff').delete().eq('id',id);
+  await loadStaff(); toast('कर्मचारी हटवला!');
+}
+function openAttendanceModal(){
+  openModal(`<div class="modal-header"><h2>उपस्थिती</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label>तारीख</label><input type="date" id="attDate" value="${today()}"></div>
+    <table class="items-table" style="margin-top:10px">
+      <thead><tr><th>कर्मचारी</th><th>स्थिती</th><th>तास</th></tr></thead>
+      <tbody>${STATE.staff.filter(s=>s.is_active).map(s=>`<tr>
+        <td>${s.name}</td>
+        <td><select class="att-status" data-sid="${s.id}"><option value="present">उपस्थित</option><option value="absent">अनुपस्थित</option><option value="half-day">अर्धा दिवस</option><option value="leave">रजा</option></select></td>
+        <td><input type="number" step="0.5" class="att-hours" data-sid="${s.id}" value="8"></td>
+      </tr>`).join('')}</tbody>
+    </table>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveAttendance()">💾 जतन करा</button>`);
+}
+async function saveAttendance(){
+  const date = $('attDate').value;
+  const statuses = document.querySelectorAll('.att-status');
+  const hours = document.querySelectorAll('.att-hours');
+  for(let i=0;i<statuses.length;i++){
+    const sid = parseInt(statuses[i].dataset.sid);
+    const status = statuses[i].value;
+    const h = parseFloat(hours[i].value)||0;
+    // Upsert
+    const {data:existing}=await sb.from('attendance').select('*').eq('staff_id',sid).eq('date',date).limit(1);
+    if(existing && existing.length) await sb.from('attendance').update({status,hours_worked:h}).eq('id',existing[0].id);
+    else await sb.from('attendance').insert({staff_id:sid,date,status,hours_worked:h});
+  }
+  closeModal(); toast('उपस्थिती जतन! ✅');
+}
+function openSalaryModal(){
+  openModal(`<div class="modal-header"><h2>पगार भरा</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>कर्मचारी</label><select id="salStaff">${STATE.staff.map(s=>`<option value="${s.id}">${s.name} (${fmt(s.salary)})</option>`).join('')}</select></div>
+      <div class="form-group"><label>महिना</label><input type="month" id="salMonth" value="${today().slice(0,7)}"></div>
+      <div class="form-group"><label>रक्कम</label><input type="number" step="0.01" id="salAmt" value="0"></div>
+      <div class="form-group"><label>तारीख</label><input type="date" id="salDate" value="${today()}"></div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="saveSalary()">💾 जतन करा</button>`);
+}
+async function saveSalary(){
+  const obj = {
+    staff_id:parseInt($('salStaff').value), month:$('salMonth').value,
+    amount:parseFloat($('salAmt').value)||0, paid_date:$('salDate').value
+  };
+  const {error}=await sb.from('salary_payments').insert(obj);
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  closeModal(); toast('पगार जतन! ✅');
+}
+
+// =====================================================
 // DASHBOARD
-// ============================================================
-async function loadDashboard(){
-  const today = new Date().toISOString().split('T')[0];
-  const { data: todaySales } = await sb.from('invoices').select('total_amount').eq('invoice_type','sale').eq('invoice_date', today);
-  const todaySalesTotal = (todaySales||[]).reduce((s,i)=>s+i.total_amount,0);
-  document.getElementById('kpiTodaySales').textContent = '₹'+todaySalesTotal.toFixed(0);
-
-  const { data: todayPayments } = await sb.from('ledger_entries').select('amount').eq('entry_type','payment_received').eq('entry_date', today);
-  const recovery = (todayPayments||[]).reduce((s,l)=>s + Math.abs(l.amount), 0);
-  document.getElementById('kpiTodayRecovery').textContent = '₹'+recovery.toFixed(0);
-
-  const { data: allLedger } = await sb.from('ledger_entries').select('party_id, amount');
-  const totalsByParty = {};
-  (allLedger||[]).forEach(l=>{ totalsByParty[l.party_id] = (totalsByParty[l.party_id]||0) + l.amount; });
-  let outstanding = 0;
-  parties.forEach(p=>{ outstanding += (p.opening_balance||0) + (totalsByParty[p.id]||0); });
-  document.getElementById('kpiOutstanding').textContent = '₹'+outstanding.toFixed(0);
-
-  const lowStockCount = products.filter(p=>p.low_stock_alert_kg && p.current_stock_kg<=p.low_stock_alert_kg).length;
-  document.getElementById('kpiLowStock').textContent = lowStockCount;
-
-  // Top products by sale qty
-  const { data: soldItems } = await sb.from('invoice_items').select('qty_kg, product_id, invoices!inner(invoice_type)').eq('invoices.invoice_type','sale');
-  const qtyByProduct = {};
-  (soldItems||[]).forEach(it=>{ qtyByProduct[it.product_id] = (qtyByProduct[it.product_id]||0) + it.qty_kg; });
-  const top5 = Object.entries(qtyByProduct).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  document.getElementById('topProductsTable').innerHTML = top5.map(([pid,qty])=>{
-    const p = products.find(pp=>pp.id===pid);
-    return `<tr><td>${p?.name||'-'}</td><td>${qty.toFixed(1)}</td></tr>`;
-  }).join('') || '<tr><td colspan="2" class="small">अजून विक्री झालेली नाही</td></tr>';
-
-  // Expiry alerts
-  const soonList = products.filter(p=>p.expiry_date && (new Date(p.expiry_date)-new Date())<30*24*3600*1000);
-  document.getElementById('expiryAlertTable').innerHTML = soonList.map(p=>`<tr><td>${p.name}</td><td>${p.batch_number||'-'}</td><td>${p.expiry_date}</td></tr>`).join('') || '<tr><td colspan="3" class="small">काहीही expiry जवळ नाही</td></tr>';
+// =====================================================
+async function renderDashboard(){
+  $('todayDate').textContent = ' - ' + new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const todayStr = today();
+  // Today's sales
+  const todaySales = STATE.invoices.filter(i=>i.invoice_date===todayStr && i.type==='sales').reduce((s,i)=>s+Number(i.total),0);
+  const todayPurchase = STATE.invoices.filter(i=>i.invoice_date===todayStr && i.type==='purchase').reduce((s,i)=>s+Number(i.total),0);
+  const todayCollection = STATE.invoices.filter(i=>i.invoice_date===todayStr && i.paid_amount>0).reduce((s,i)=>s+Number(i.paid_amount),0);
+  // Outstanding
+  let totalOutstanding = 0;
+  for(const p of STATE.parties){
+    const {data:entries}=await sb.from('ledger_entries').select('amount').eq('party_id',p.id);
+    let bal = Number(p.opening_balance||0);
+    (entries||[]).forEach(e=>bal+=Number(e.amount));
+    if(bal>0) totalOutstanding += bal;
+    p.current_balance = bal;
+  }
+  $('dashStats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">आजची विक्री</div><div class="stat-value">${fmt(todaySales)}</div><div class="stat-sub">${STATE.invoices.filter(i=>i.invoice_date===todayStr && i.type==='sales').length} बिले</div></div>
+    <div class="stat-card blue"><div class="stat-label">आजची खरेदी</div><div class="stat-value">${fmt(todayPurchase)}</div></div>
+    <div class="stat-card orange"><div class="stat-label">आजची वसुली</div><div class="stat-value">${fmt(todayCollection)}</div></div>
+    <div class="stat-card red"><div class="stat-label">एकूण उधारी</div><div class="stat-value">${fmt(totalOutstanding)}</div><div class="stat-sub">${STATE.parties.filter(p=>(p.current_balance||0)>0).length} पार्ट्या</div></div>
+    <div class="stat-card"><div class="stat-label">एकूण उत्पादने</div><div class="stat-value">${STATE.products.length}</div></div>
+    <div class="stat-card orange"><div class="stat-label">कमी स्टॉक</div><div class="stat-value">${STATE.products.filter(p=>p.stock_qty<=p.reorder_level && p.stock_qty>0).length}</div></div>`;
+  // Top 5 products today
+  const todayItems = {};
+  for(const inv of STATE.invoices.filter(i=>i.invoice_date===todayStr && i.type==='sales')){
+    const {data:items}=await sb.from('invoice_items').select('product_id,qty').eq('invoice_id',inv.id);
+    (items||[]).forEach(it=>{todayItems[it.product_id]=(todayItems[it.product_id]||0)+Number(it.qty)});
+  }
+  const top5 = Object.entries(todayItems).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  $('topProducts').innerHTML = top5.length ? top5.map(([pid,qty])=>{
+    const p = STATE.products.find(x=>x.id==pid);
+    return `<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid var(--gray-100)"><span>${p?.name||'#'+pid}</span><b>${qty} ${p?.unit||''}</b></div>`;
+  }).join('') : '<p style="color:var(--gray-500);font-size:13px">आज कोणतीही विक्री नाही</p>';
+  // Low stock
+  const low = STATE.products.filter(p=>p.stock_qty<=p.reorder_level && p.stock_qty>0).slice(0,5);
+  $('lowStockList').innerHTML = low.length ? low.map(p=>`<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid var(--gray-100)"><span>${p.name}</span><span class="badge badge-orange">${p.stock_qty} ${p.unit}</span></div>`).join('') : '<p style="color:var(--gray-500);font-size:13px">सर्व स्टॉक ठीक आहे ✅</p>';
+  // Expiry
+  const exp = STATE.products.filter(p=>p.expiry_date && (new Date(p.expiry_date)-new Date())/(1000*60*60*24) < 90 && (new Date(p.expiry_date)-new Date())>0).slice(0,5);
+  $('expiryList').innerHTML = exp.length ? exp.map(p=>{
+    const days = Math.ceil((new Date(p.expiry_date)-new Date())/(1000*60*60*24));
+    return `<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid var(--gray-100)"><span>${p.name}</span><span class="badge ${days<30?'badge-red':'badge-orange'}">${days} दिवस</span></div>`;
+  }).join('') : '<p style="color:var(--gray-500);font-size:13px">कोणतीही जवळची एक्सपायरी नाही ✅</p>';
+  // Alerts
+  const alerts = [];
+  if(low.length) alerts.push(`<div class="alert alert-warning">⚠️ <b>${low.length}</b> उत्पादनांचा स्टॉक कमी आहे!</div>`);
+  if(exp.length) alerts.push(`<div class="alert alert-danger">⏰ <b>${exp.length}</b> उत्पादने लवकर एक्सपायर होतील!</div>`);
+  if(totalOutstanding>0) alerts.push(`<div class="alert alert-info">💰 एकूण उधारी: <b>${fmt(totalOutstanding)}</b></div>`);
+  $('alertsContainer').innerHTML = alerts.join('');
 }
 
-// ============================================================
+// =====================================================
 // REPORTS
-// ============================================================
-async function loadReports(){
-  document.getElementById('reportStockTable').innerHTML = products.map(p=>{
-    const low = p.low_stock_alert_kg && p.current_stock_kg<=p.low_stock_alert_kg;
-    return `<tr><td>${p.name}</td><td>${p.current_stock_kg}</td><td>${low?'<span class="tag due">Low</span>':'<span class="tag paid">OK</span>'}</td></tr>`;
-  }).join('');
-
-  const { data: allLedger } = await sb.from('ledger_entries').select('party_id, amount');
-  const totalsByParty = {};
-  (allLedger||[]).forEach(l=>{ totalsByParty[l.party_id] = (totalsByParty[l.party_id]||0) + l.amount; });
-  const outstandingList = parties.map(p=>({ ...p, outstanding: (p.opening_balance||0)+(totalsByParty[p.id]||0) }))
-    .filter(p=>p.outstanding>0).sort((a,b)=>b.outstanding-a.outstanding);
-  document.getElementById('reportOutstandingTable').innerHTML = outstandingList.map(p=>`<tr><td>${p.name}</td><td>${p.village||'-'}</td><td>₹${p.outstanding.toFixed(2)}</td></tr>`).join('') || '<tr><td colspan="3" class="small">कोणतीही उधारी शिल्लक नाही</td></tr>';
-
-  const today = new Date().toISOString().split('T')[0];
-  const { data: dayInvoices } = await sb.from('invoices').select('*, parties(name)').eq('invoice_date', today);
-  document.getElementById('reportDayBookTable').innerHTML = (dayInvoices||[]).map(i=>`<tr><td>${new Date(i.created_at).toLocaleTimeString()}</td><td>${i.invoice_type}</td><td>${i.parties?.name||'-'} (${i.invoice_no})</td><td>₹${i.total_amount}</td></tr>`).join('') || '<tr><td colspan="4" class="small">आज कोणतंही व्यवहार नाही</td></tr>';
+// =====================================================
+async function showReport(type){
+  const c = $('reportContainer');
+  c.innerHTML = '<div class="card"><div class="loader"></div> लोड होत आहे...</div>';
+  if(type==='gst'){
+    // HSN-wise GST report
+    const {data:items}=await sb.from('invoice_items').select('*,products(hsn_code,name,gst_percent),invoices(type,invoice_date,financial_year)').eq('invoices.financial_year',STATE.currentFY);
+    const hsnMap = {};
+    (items||[]).forEach(it=>{
+      if(!it.invoices || it.invoices.financial_year!==STATE.currentFY) return;
+      const hsn = it.products?.hsn_code || 'NO-HSN';
+      if(!hsnMap[hsn]) hsnMap[hsn] = {hsn, taxable:0, cgst:0, sgst:0, igst:0, rate:it.products?.gst_percent||0};
+      const base = it.amount/(1+it.gst_percent/100);
+      const gst = it.amount-base;
+      if(it.invoices.type==='sales'||it.invoices.type==='purchase_return'){
+        hsnMap[hsn].taxable += base;
+        hsnMap[hsn].igst += gst; // simplified
+      } else {
+        hsnMap[hsn].taxable -= base;
+        hsnMap[hsn].igst -= gst;
+      }
+    });
+    const rows = Object.values(hsnMap).map(h=>`<tr><td>${h.hsn}</td><td>${h.rate}%</td><td>${fmt(h.taxable)}</td><td>${fmt(h.igst)}</td></tr>`).join('');
+    c.innerHTML = `<div class="card"><div class="card-title">📋 GST अहवाल - FY ${STATE.currentFY}</div>
+      <div class="table-wrap"><table><thead><tr><th>HSN</th><th>GST%</th><th>करपात्र रक्कम</th><th>IGST</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <button class="btn btn-primary" style="margin-top:10px" onclick="window.print()">🖨️ प्रिंट</button></div>`;
+  } else if(type==='pnl'){
+    const sales = STATE.invoices.filter(i=>i.type==='sales').reduce((s,i)=>s+Number(i.total),0);
+    const purchases = STATE.invoices.filter(i=>i.type==='purchase').reduce((s,i)=>s+Number(i.total),0);
+    const sr = STATE.invoices.filter(i=>i.type==='sales_return').reduce((s,i)=>s+Number(i.total),0);
+    const pr = STATE.invoices.filter(i=>i.type==='purchase_return').reduce((s,i)=>s+Number(i.total),0);
+    const netSales = sales-sr;
+    const netPurchases = purchases-pr;
+    const profit = netSales-netPurchases;
+    c.innerHTML = `<div class="card"><div class="card-title">💹 नफा-तोटा - FY ${STATE.currentFY}</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">एकूण विक्री</div><div class="stat-value">${fmt(sales)}</div></div>
+        <div class="stat-card red"><div class="stat-label">विक्री परतावा</div><div class="stat-value">${fmt(sr)}</div></div>
+        <div class="stat-card blue"><div class="stat-label">एकूण खरेदी</div><div class="stat-value">${fmt(purchases)}</div></div>
+        <div class="stat-card orange"><div class="stat-label">खरेदी परतावा</div><div class="stat-value">${fmt(pr)}</div></div>
+        <div class="stat-card"><div class="stat-label">निव्वळ विक्री</div><div class="stat-value">${fmt(netSales)}</div></div>
+        <div class="stat-card ${profit>=0?'':'red'}"><div class="stat-label">${profit>=0?'नफा':'तोटा'}</div><div class="stat-value">${fmt(Math.abs(profit))}</div></div>
+      </div></div>`;
+  } else if(type==='outstanding'){
+    const list = STATE.parties.filter(p=>(p.current_balance||0)>0).sort((a,b)=>b.current_balance-a.current_balance);
+    c.innerHTML = `<div class="card"><div class="card-title">💰 थकित उधारी</div>
+      <div class="table-wrap"><table><thead><tr><th>पार्टी</th><th>गाव</th><th>फोन</th><th>शिल्लक</th><th>कृती</th></tr></thead><tbody>
+      ${list.map(p=>`<tr><td><b>${p.name}</b></td><td>${p.village||'-'}</td><td>${p.phone||'-'}</td><td style="color:var(--red)"><b>${fmt(p.current_balance)}</b></td>
+        <td><button class="btn btn-sm btn-primary" onclick="sendWhatsAppReminder(${p.id})">📱 रिमाइंडर</button></td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;padding:20px">कोणतीही उधारी नाही ✅</td></tr>'}
+      </tbody></table></div></div>`;
+  } else if(type==='daybook'){
+    const {data:entries}=await sb.from('ledger_entries').select('*').gte('entry_date',STATE.currentFY.split('-')[0]+'-04-01').order('entry_date',{ascending:false});
+    const byDate = {};
+    (entries||[]).forEach(e=>{
+      if(!byDate[e.entry_date]) byDate[e.entry_date]={date:e.entry_date,dr:0,cr:0,entries:[]};
+      if(e.amount>0) byDate[e.entry_date].dr+=e.amount; else byDate[e.entry_date].cr+=-e.amount;
+      byDate[e.entry_date].entries.push(e);
+    });
+    const rows = Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date)).map(d=>`<tr><td>${fmtDate(d.date)}</td><td style="color:var(--red)">${fmt(d.dr)}</td><td style="color:var(--green-700)">${fmt(d.cr)}</td><td>${d.entries.length} व्यवहार</td></tr>`).join('');
+    c.innerHTML = `<div class="card"><div class="card-title">📒 डे बुक</div>
+      <div class="table-wrap"><table><thead><tr><th>तारीख</th><th>जमा</th><th>वजा</th><th>व्यवहार</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  } else if(type==='salesreg'){
+    const list = STATE.invoices.filter(i=>i.type==='sales').sort((a,b)=>b.invoice_date.localeCompare(a.invoice_date));
+    c.innerHTML = `<div class="card"><div class="card-title">📈 विक्री नोंदणी</div>
+      <div class="table-wrap"><table><thead><tr><th>तारीख</th><th>Invoice #</th><th>पार्टी</th><th>रक्कम</th></tr></thead><tbody>
+      ${list.map(i=>`<tr><td>${fmtDate(i.invoice_date)}</td><td>${i.invoice_no}</td><td>${i.parties?.name||'-'}</td><td>${fmt(i.total)}</td></tr>`).join('')}
+      </tbody></table></div></div>`;
+  } else if(type==='purchasereg'){
+    const list = STATE.invoices.filter(i=>i.type==='purchase').sort((a,b)=>b.invoice_date.localeCompare(a.invoice_date));
+    c.innerHTML = `<div class="card"><div class="card-title">📉 खरेदी नोंदणी</div>
+      <div class="table-wrap"><table><thead><tr><th>तारीख</th><th>Invoice #</th><th>सप्लायर</th><th>रक्कम</th></tr></thead><tbody>
+      ${list.map(i=>`<tr><td>${fmtDate(i.invoice_date)}</td><td>${i.invoice_no}</td><td>${i.parties?.name||'-'}</td><td>${fmt(i.total)}</td></tr>`).join('')}
+      </tbody></table></div></div>`;
+  }
 }
 
-async function loadRegister(){
-  const from = document.getElementById('regFrom').value;
-  const to = document.getElementById('regTo').value;
-  let query = sb.from('invoices').select('*, parties(name)').order('invoice_date');
-  if(from) query = query.gte('invoice_date', from);
-  if(to) query = query.lte('invoice_date', to);
-  const { data, error } = await query;
-  if(error){ showToast('Error: '+error.message); return; }
-  document.getElementById('reportRegisterTable').innerHTML = (data||[]).map(i=>`<tr><td>${i.invoice_no}</td><td>${i.invoice_type}</td><td>${i.invoice_date}</td><td>${i.parties?.name||'-'}</td><td>₹${i.total_amount}</td></tr>`).join('');
-}
-
-// ============================================================
-// BACKUP / EXPORT (CSV)
-// ============================================================
-async function exportCSV(tableName){
-  const { data, error } = await sb.from(tableName).select('*');
-  if(error){ showToast('Error: '+error.message); return; }
-  if(!data || data.length===0){ showToast('डेटा उपलब्ध नाही'); return; }
-  const headers = Object.keys(data[0]);
-  const csvRows = [headers.join(',')];
-  data.forEach(row=>{
-    csvRows.push(headers.map(h=>{
-      let val = row[h];
-      if(val===null||val===undefined) val='';
-      val = String(val).replace(/"/g,'""');
-      return `"${val}"`;
-    }).join(','));
-  });
-  const blob = new Blob([csvRows.join('\n')], {type:'text/csv'});
+// =====================================================
+// BACKUP / EXPORT / IMPORT
+// =====================================================
+async function exportData(){
+  const table = $('exportTable').value;
+  const format = $('exportFormat').value;
+  const from = $('exportFrom').value;
+  const to = $('exportTo').value;
+  let data = {};
+  if(table==='all'){
+    const tables = ['parties','products','invoices','invoice_items','ledger_entries','quotations','quotation_items','staff','attendance','salary_payments','godowns','stock','stock_movements','settings'];
+    for(const t of tables){
+      const {data:d}=await sb.from(t).select('*');
+      data[t]=d||[];
+    }
+  } else {
+    let q = sb.from(table).select('*');
+    if(from) q = q.gte('entry_date',from).or(`invoice_date.gte.${from},quotation_date.gte.${from},date.gte.${from},paid_date.gte.${from}`,{foreignTable:''});
+    const {data:d}=await q;
+    data[table]=d||[];
+  }
+  let content, mime, ext;
+  if(format==='json'){
+    content = JSON.stringify(data,null,2);
+    mime='application/json'; ext='json';
+  } else {
+    // CSV for first table
+    const key = Object.keys(data)[0];
+    const rows = data[key];
+    if(!rows || !rows.length){ toast('No data','warning'); return; }
+    const headers = Object.keys(rows[0]);
+    content = headers.join(',')+'\n'+rows.map(r=>headers.map(h=>JSON.stringify(r[h]??'')).join(',')).join('\n');
+    mime='text/csv'; ext='csv';
+  }
+  const blob = new Blob([content],{type:mime});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = `${tableName}_export_${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✅ Export डाउनलोड झालं');
+  a.href=url; a.download=`venktesh_erp_backup_${today()}.${ext}`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('बॅकअप डाउनलोड! ✅');
+}
+async function restoreData(){
+  const file = $('restoreFile').files[0];
+  if(!file){ toast('फाईल निवडा','error'); return; }
+  if(!confirmAction('सध्याचा डेटा खोडला जाऊन नवीन डेटा येईल. पुढे चालू ठेवायचे?')) return;
+  const text = await file.text();
+  try{
+    const data = JSON.parse(text);
+    for(const table of Object.keys(data)){
+      await sb.from(table).delete().neq('id',0);
+      if(data[table].length) await sb.from(table).insert(data[table]);
+    }
+    toast('डेटा पुनर्संचयित! ✅');
+    setTimeout(()=>location.reload(),1500);
+  }catch(e){ toast('Invalid JSON file','error'); }
+}
+async function importCSV(){
+  const file = $('importFile').files[0];
+  const type = $('importType').value;
+  if(!file){ toast('फाईल निवडा','error'); return; }
+  const text = await file.text();
+  const lines = text.split('\n').filter(l=>l.trim());
+  if(lines.length<2){ toast('Empty CSV','error'); return; }
+  const headers = lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+  const rows = lines.slice(1).map(l=>{
+    const vals = l.split(',').map(v=>v.trim().replace(/"/g,''));
+    const obj = {};
+    headers.forEach((h,i)=>obj[h]=vals[i]);
+    return obj;
+  });
+  let count=0;
+  for(const r of rows){
+    try{
+      if(type==='parties'){
+        await sb.from('parties').insert({name:r.name||r.Name,phone:r.phone||r.Phone,village:r.village||r.Village,gstin:r.gstin||r.GSTIN,type:r.type||'customer',opening_balance:parseFloat(r.opening_balance||r.Opening||0)});
+      } else if(type==='products'){
+        await sb.from('products').insert({name:r.name||r.Name,category:r.category||'',hsn_code:r.hsn||r.HSN||'',unit:r.unit||'kg',purchase_price:parseFloat(r.purchase_price||r.Purchase||0),sale_price:parseFloat(r.sale_price||r.Sale||0),gst_percent:parseFloat(r.gst||r.GST||0)});
+      } else if(type==='opening'){
+        // Find party by name and create ledger entry
+        const {data:p}=await sb.from('parties').select('id').ilike('name',r.name||r.Name).limit(1);
+        if(p && p.length){
+          await sb.from('ledger_entries').insert({party_id:p[0].id,entry_date:today(),type:'opening',amount:parseFloat(r.amount||0),notes:'Imported opening'});
+        }
+      }
+      count++;
+    }catch(e){console.error(e)}
+  }
+  toast(`${count} रेकॉर्ड आयात! ✅`);
+  await Promise.all([loadParties(),loadProducts()]);
 }
 
+// =====================================================
+// KEYBOARD SHORTCUTS
+// =====================================================
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+  if(e.ctrlKey||e.metaKey){
+    if(e.key==='1'){e.preventDefault();showPage('dashboard',document.querySelectorAll('.tab-btn')[0])}
+    if(e.key==='2'){e.preventDefault();showPage('billing',document.querySelectorAll('.tab-btn')[1])}
+    if(e.key==='3'){e.preventDefault();showPage('quotations',document.querySelectorAll('.tab-btn')[2])}
+    if(e.key==='4'){e.preventDefault();showPage('inventory',document.querySelectorAll('.tab-btn')[3])}
+    if(e.key==='5'){e.preventDefault();showPage('parties',document.querySelectorAll('.tab-btn')[4])}
+    if(e.key==='n'&&$('page-billing').classList.contains('active')){e.preventDefault();openBillModal('sales')}
+    if(e.key==='p'&&$('page-billing').classList.contains('active')){e.preventDefault();openBillModal('purchase')}
+    if(e.key==='f'){e.preventDefault();const s=document.querySelector('.page.active .search-bar input');if(s)s.focus()}
+  }
+});
+
+// =====================================================
+// AUTO-REFRESH
+// =====================================================
+setInterval(()=>{
+  if($('page-dashboard').classList.contains('active')) renderDashboard();
+},60000);
+
+console.log('🌾 New Venktesh Agro Agency ERP loaded!');
 </script>
 </body>
 </html>
